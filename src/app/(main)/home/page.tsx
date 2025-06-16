@@ -1,9 +1,11 @@
 import { checkAuthServer } from '@/actions/authActions';
 import { redirect } from 'next/navigation';
 
-export default async function Home() {
+const HomePage = async () => {
   const isLoggedIn = await checkAuthServer();
   if (isLoggedIn) {
     redirect('/comidas');
-  } else redirect('/home');
-}
+  } else redirect('/login');
+};
+
+export default HomePage;

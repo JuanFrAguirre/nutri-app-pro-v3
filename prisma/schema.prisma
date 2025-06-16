@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Food {
+  id       String  @id
+  name     String
+  calories Int
+  protein  Float
+  carbs    Float
+  fats     Float
+  mealId   String?
+  Meal     Meal?   @relation(fields: [mealId], references: [id], onDelete: Cascade)
+}
+
+model Meal {
+  id   String   @id
+  name String
+  date DateTime @default(now())
+  Food Food[]
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        String @id @default(uuid())
+  email     String @unique
+  firstName String
+  lastName  String
+  password  String
+  Meal      Meal[]
+}
