@@ -14,7 +14,7 @@ const ProductsPage = async () => {
             key={product.id}
             className="border rounded-xs p-4 bg-brand-whiter border-brand-gray/5 shadow-xl flex flex-col gap-2 text-black"
           >
-            <p className="font-thin h-12 text-center text-sm md:text-base line-clamp-2">
+            <p className="font-thin h-12 text-center text-sm md:text-base custom-ellipsis">
               {product.title}
             </p>
             <Image

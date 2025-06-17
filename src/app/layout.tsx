@@ -3,6 +3,15 @@ import type { Metadata } from 'next';
 import { Open_Sans } from 'next/font/google';
 import './globals.css';
 
+import type { Viewport } from 'next';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#fafafa',
+};
+
 const openSans = Open_Sans({
   subsets: ['latin'],
   variable: '--font-open-sans',
@@ -13,16 +22,10 @@ export const metadata: Metadata = {
   title: 'Nutri App Pro',
   description: 'Una aplicación para calcular y trackear tu alimentación.',
   manifest: '/manifest.json',
-  themeColor: '#f5f5f5',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Nutri App Pro',
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
   },
   icons: {
     icon: [
@@ -46,17 +49,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <meta name="apple-mobile-web-app-capable" content="yes" />
-      {/* "black-translucent" hace que el contenido suba bajo la barra superior */}
-      <meta
-        name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent"
-      />
-      {/* viewport-fit=cover para usar toda la pantalla, incluida zona inferior */}
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover"
-      />
       <body className={`${openSans.variable}`}>
         <RootWrapper className="min-h-screen antialiased flex flex-col items-center">
           {children}

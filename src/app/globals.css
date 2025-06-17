@@ -93,3 +93,14 @@ button {
 .toast-item {
   @apply rounded-sm max-md:shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)] border shadow-xl! border-brand-grayer/50;
 }
+
+.custom-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-height: 24px; /* fallback */
+  max-height: 48px; /* fallback */
+}

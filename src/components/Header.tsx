@@ -61,10 +61,7 @@ const MobileNav = ({ links, pathname }: NavProps) => {
   return (
     <header className="fixed top-0 md:hidden inset-x-0 bg-brand-whiter shadow-xl h-12 md:h-16 flex items-center pt-safe">
       <div
-        className={clsx(
-          'container mx-auto flex items-center',
-          !!links.length ? 'justify-between' : 'justify-center',
-        )}
+        className={clsx('container mx-auto flex items-center justify-center')}
       >
         <button
           onClick={() => {
@@ -77,9 +74,9 @@ const MobileNav = ({ links, pathname }: NavProps) => {
           <h1>NutriAppPro</h1>
         </button>
         {!!links.length && (
-          <nav className="relative flex items-center mr-5">
+          <nav className="relative">
             <button
-              className="rounded-xs"
+              className="fixed bottom-10 right-6 bg-brand-whiter border border-brand-gray/30 p-1 rounded-xs shadow-xl"
               onClick={() => setIsMenuOpen((prev) => !prev)}
             >
               <IoMdMenu
@@ -92,10 +89,10 @@ const MobileNav = ({ links, pathname }: NavProps) => {
                 'bg-black/5 backdrop-blur-[2px] fixed inset-0',
                 isMenuOpen ? '' : 'hidden',
               )}
-            ></div>
+            />
             <div
               className={clsx(
-                'flex flex-col gap-2 fixed bottom-10 right-4 bg-brand-whiter shadow-xl border border-brand-gray/30 rounded-xs transition-all duration-400 min-w-[150px]',
+                'flex flex-col justify-end gap-2 fixed bottom-5 right-5 bg-brand-whiter shadow-xl border border-brand-gray/30 rounded-xs transition-all duration-400 min-w-[150px]',
                 isMenuOpen
                   ? 'translate-x-0 translate-y-0'
                   : 'translate-x-[125%] translate-y-[20%]',
