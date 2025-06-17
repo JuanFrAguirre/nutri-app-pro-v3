@@ -51,7 +51,6 @@ const Header = () => {
 type NavProps = { links: typeof AUTH_LINKS; pathname: string };
 
 const MobileNav = ({ links, pathname }: NavProps) => {
-  console.log({ links, pathname });
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,7 +59,7 @@ const MobileNav = ({ links, pathname }: NavProps) => {
     setIsMenuOpen(false);
   };
   return (
-    <header className="fixed bottom-0 md:hidden inset-x-0 bg-brand-whiter shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)] h-12 md:h-16 flex items-center pb-safe">
+    <header className="fixed top-0 md:hidden inset-x-0 bg-brand-whiter shadow-xl h-12 md:h-16 flex items-center pt-safe">
       <div
         className={clsx(
           'container mx-auto flex items-center',
@@ -96,7 +95,7 @@ const MobileNav = ({ links, pathname }: NavProps) => {
             ></div>
             <div
               className={clsx(
-                'flex flex-col gap-2 absolute bottom-[100%] right-4 bg-brand-whiter shadow-xl border border-brand-gray/30 rounded-xs transition-all duration-400 min-w-[150px]',
+                'flex flex-col gap-2 fixed bottom-10 right-4 bg-brand-whiter shadow-xl border border-brand-gray/30 rounded-xs transition-all duration-400 min-w-[150px]',
                 isMenuOpen
                   ? 'translate-x-0 translate-y-0'
                   : 'translate-x-[125%] translate-y-[20%]',

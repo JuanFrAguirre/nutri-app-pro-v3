@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: 'Nutri App Pro',
   description: 'Una aplicación para calcular y trackear tu alimentación.',
   manifest: '/manifest.json',
-  themeColor: '#ec4899',
+  themeColor: '#f5f5f5',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

@@ -15,7 +15,7 @@ const RootWrapper = ({
 }) => {
   return (
     <LoadingProvider>
-      <div className={clsx('max-md:pb-12 md:pt-16', className)}>
+      <div className={clsx(`pt-12 md:pt-16`, className)}>
         <LoadingSpinner />
         <ToastContainer
           closeOnClick={true}
