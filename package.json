@@ -8,7 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "tsx prisma/reset.ts"
+    "db:reset": "tsx prisma/reset.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "npm run build"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -36,6 +42,8 @@
     "axios": "^1.10.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
     "typescript": "^5"
