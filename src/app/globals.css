@@ -8,6 +8,22 @@
   --safe-left: env(safe-area-inset-left);
 }
 
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: var(--safe-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
 @theme {
   --color-brand-white: #efefef;
   --color-brand-whiter: #fafafa;
@@ -30,7 +46,7 @@ body,
 }
 
 .header-mobile {
-  padding-bottom: var(--safe-top);
+  @apply pb-safe;
 }
 
 body {
