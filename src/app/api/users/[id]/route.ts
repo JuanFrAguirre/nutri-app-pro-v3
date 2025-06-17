@@ -1,10 +1,9 @@
 import prisma from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { id: string } },
-) {
+type Params = { params: Promise<{ id: string }> };
+
+export async function DELETE(_: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
     await prisma.user.delete({ where: { id } });
@@ -18,10 +17,7 @@ export async function DELETE(
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function GET(request: NextRequest, { params }: Params) {
   try {
     const userId = request.headers.get('x-user-id');
     const { id } = await params;

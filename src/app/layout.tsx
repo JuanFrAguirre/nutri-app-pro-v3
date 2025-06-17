@@ -1,8 +1,7 @@
+import RootWrapper from '@/components/RootWrapper';
 import type { Metadata } from 'next';
 import { Open_Sans } from 'next/font/google';
 import './globals.css';
-import RootWrapper from '@/components/RootWrapper';
-import Header from '@/components/Header';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -22,8 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.variable}`}>
-        <RootWrapper className="min-h-screen antialiased flex flex-col items-center justify-center">
-          <Header />
+        <RootWrapper className="min-h-screen antialiased flex flex-col items-center">
           {children}
         </RootWrapper>
       </body>

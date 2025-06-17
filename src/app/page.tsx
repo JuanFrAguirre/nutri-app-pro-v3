@@ -4,6 +4,6 @@ import { redirect } from 'next/navigation';
 export default async function Home() {
   const isLoggedIn = await checkAuthServer();
   if (isLoggedIn) {
-    redirect('/comidas');
-  } else redirect('/home');
+    redirect('/registros');
+  } else redirect('/login');
 }

@@ -20,17 +20,17 @@ export async function POST(request: NextRequest) {
         { status: 401 },
       );
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'secret');
     const token = await new SignJWT({ id: user.id })
       .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('24h')
+      .setExpirationTime('1h')
       .sign(secret);
 
     const cookieStore = await cookies();
     cookieStore.set('Authorization', `Bearer ${token}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60,
+      maxAge: 1 * 60 * 60,
       path: '/',
     });
     return Response.json({ message: 'Login successful', user, token });

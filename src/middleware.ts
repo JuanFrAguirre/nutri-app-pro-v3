@@ -23,6 +23,7 @@ const protectedRoutes = {
     '/comidas',
     '/productos',
     '/calculadora',
+    '/registros',
     // Add more page routes here
   ],
 };
@@ -87,6 +88,7 @@ export const config = {
     '/comidas/:path*',
     '/productos/:path*',
     '/calculadora/:path*',
+    '/registros/:path*',
     // Add more matchers as needed
   ],
 };

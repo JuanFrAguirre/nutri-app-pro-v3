@@ -72,19 +72,16 @@ const RegisterForm = () => {
       firstName: yup
         .string()
         .required('El nombre es requerido')
-        .min(3, 'El nombre debe tener al menos 3 caracteres')
-        .max(20, 'El nombre debe tener menos de 20 caracteres'),
+        .min(3, 'El nombre debe tener al menos 3 caracteres'),
       lastName: yup
         .string()
         .required('El apellido es requerido')
-        .min(3, 'El apellido debe tener al menos 3 caracteres')
-        .max(20, 'El apellido debe tener menos de 20 caracteres'),
+        .min(3, 'El apellido debe tener al menos 3 caracteres'),
       email: yup
         .string()
         .email('El correo electrónico no es válido')
         .required('El correo electrónico es requerido')
-        .min(3, 'El correo electrónico debe tener al menos 3 caracteres')
-        .max(20, 'El correo electrónico debe tener menos de 20 caracteres'),
+        .min(3, 'El correo electrónico debe tener al menos 3 caracteres'),
       password: yup
         .string()
         .required('La contraseña es requerida')
@@ -108,11 +105,13 @@ const RegisterForm = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
+    const { confirmPassword: _, ...restOfData } = data;
+    const trimmedData = Object.fromEntries(
+      Object.entries(restOfData).map(([key, value]) => [key, value.trim()]),
+    );
     try {
-      const { confirmPassword: _, ...restOfData } = data;
       setIsLoading(true);
-      await axios.post('/api/register', restOfData);
+      await axios.post('/api/register', trimmedData);
       toast.success('Cuenta creada con éxito');
       router.push('/login');
     } catch (error) {
@@ -147,6 +146,7 @@ const RegisterForm = () => {
               )}
               placeholder={field.placeholder}
               autoComplete={field.autocomplete ? 'on' : 'off'}
+              autoFocus={field.name === 'firstName'}
               {...register(field.name as RegisterFormDataKeys)}
             />
             {errors[field.name as RegisterFormDataKeys] && (

@@ -7,32 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Food {
-  id       String  @id
-  name     String
-  calories Int
-  protein  Float
-  carbs    Float
-  fats     Float
-  mealId   String?
-  Meal     Meal?   @relation(fields: [mealId], references: [id], onDelete: Cascade)
+model Product {
+  id               String   @id @default(uuid())
+  title            String
+  image            String
+  calories         Int
+  fats             Float
+  carbs            Float
+  proteins         Float
+  presentationSize Float
+  tags             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  mealId      String?
+  Meal        Meal?         @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  MealProduct MealProduct[]
 }
 
 model Meal {
-  id   String   @id
-  name String
-  date DateTime @default(now())
-  Food Food[]
+  id        String        @id @default(uuid())
+  name      String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  Product   Product[]
+  products  MealProduct[]
 
-  userId String
-  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+  User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MealProduct {
+  id        String   @id @default(uuid())
+  quantity  Float
+  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([mealId, productId])
 }
 
 model User {
-  id        String @id @default(uuid())
-  email     String @unique
+  id        String   @id @default(uuid())
+  email     String   @unique
   firstName String
   lastName  String
   password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   Meal      Meal[]
 }
