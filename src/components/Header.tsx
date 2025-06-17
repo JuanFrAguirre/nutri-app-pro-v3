@@ -60,7 +60,7 @@ const MobileNav = ({ links, pathname }: NavProps) => {
     setIsMenuOpen(false);
   };
   return (
-    <header className="fixed bottom-0 md:hidden inset-x-0 bg-brand-whiter shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)] h-12 md:h-16 flex items-center header-mobile pb-safe">
+    <header className="fixed bottom-0 md:hidden inset-x-0 bg-brand-whiter shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)] h-12 md:h-16 flex items-center pb-safe">
       <div
         className={clsx(
           'container mx-auto flex items-center',
@@ -128,7 +128,7 @@ const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
   const router = useRouter();
 
   return (
-    <header className="fixed max-md:hidden top-0 inset-x-0 bg-brand-whiter shadow-md h-16 flex items-center header-mobile">
+    <header className="fixed max-md:hidden top-0 inset-x-0 bg-brand-whiter shadow-md h-16 flex items-center">
       <div
         className={clsx(
           'container mx-auto flex items-center',

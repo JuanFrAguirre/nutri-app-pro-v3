@@ -1,11 +1,11 @@
 {
-  "name": "NutriApp",
-  "short_name": "NutriApp",
+  "name": "Nutri App Pro",
+  "short_name": "NutriAppPro",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ec4899",
-  "description": "Calculadora y tracker nutricional",
+  "description": "Una aplicación para calcular y trackear tu alimentación.",
   "icons": [
     {
       "src": "/icons/favicon-16x16.png",
