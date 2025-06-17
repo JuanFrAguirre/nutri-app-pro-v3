@@ -12,6 +12,31 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: 'Nutri App Pro',
   description: 'Una aplicación para calcular y trackear tu alimentación.',
+  manifest: '/manifest.json',
+  themeColor: '#ec4899',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Nutri App Pro',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  icons: {
+    icon: [
+      { url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      {
+        url: '/icons/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
