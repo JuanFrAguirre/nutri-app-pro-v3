@@ -1,14 +1,15 @@
+import PageWrapper from '@/components/PageWrapper';
 import LoginForm from './LoginForm';
 
 const LoginPage = () => {
   return (
-    <div className="space-y-10">
+    <PageWrapper>
       <p className="title">Iniciar sesión</p>
       <p className="subtitle">
         Iniciá sesión para comenzar a trackear tu nutrición
       </p>
       <LoginForm />
-    </div>
+    </PageWrapper>
   );
 };
 

@@ -1,13 +1,13 @@
 'use client';
+import { useLoadingContext } from '@/contexts/LoadingContext';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import Link from 'next/link';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import clsx from 'clsx';
-import { toast } from 'react-toastify';
 import axios, { AxiosError } from 'axios';
+import clsx from 'clsx';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
 type RegisterFormData = {
   firstName: string;
@@ -66,7 +66,7 @@ const REGISTER_FORM_FIELDS = [
 ];
 
 const RegisterForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading } = useLoadingContext();
   const schema = yupResolver(
     yup.object().shape({
       firstName: yup
@@ -113,7 +113,7 @@ const RegisterForm = () => {
       setIsLoading(true);
       await axios.post('/api/register', trimmedData);
       toast.success('Cuenta creada con éxito');
-      router.push('/login');
+      router.push('/iniciar-sesion');
     } catch (error) {
       console.error(error);
       if (
@@ -146,7 +146,7 @@ const RegisterForm = () => {
               )}
               placeholder={field.placeholder}
               autoComplete={field.autocomplete ? 'on' : 'off'}
-              autoFocus={field.name === 'firstName'}
+              // autoFocus={field.name === 'firstName'}
               {...register(field.name as RegisterFormDataKeys)}
             />
             {errors[field.name as RegisterFormDataKeys] && (
@@ -161,7 +161,7 @@ const RegisterForm = () => {
         <button className="btn btn-primary" disabled={isLoading}>
           Crear cuenta
         </button>
-        <Link href={'/login'} className="btn">
+        <Link href={'/iniciar-sesion'} className="btn">
           Iniciar sesión
         </Link>
       </div>

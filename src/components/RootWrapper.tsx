@@ -15,7 +15,7 @@ const RootWrapper = ({
 }) => {
   return (
     <LoadingProvider>
-      <div className={clsx('pt-16', className)}>
+      <div className={clsx('max-md:pb-12 md:pt-16', className)}>
         <LoadingSpinner />
         <ToastContainer
           closeOnClick={true}
@@ -29,7 +29,9 @@ const RootWrapper = ({
         />
         <Header />
 
-        <main className="px-5 py-20 md:pb-30 grow">{children}</main>
+        <main className="px-5 py-10 md:py-20 md:pb-30 grow container mx-auto flex flex-col">
+          {children}
+        </main>
       </div>
     </LoadingProvider>
   );

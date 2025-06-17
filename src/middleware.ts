@@ -44,7 +44,9 @@ function handleUnauthorized(isApiRoute: boolean) {
     );
   }
   // For page routes, redirect to login
-  return NextResponse.redirect(new URL('/login', process.env.BASE_URL));
+  return NextResponse.redirect(
+    new URL('/iniciar-sesion', process.env.BASE_URL),
+  );
 }
 
 export async function middleware(request: NextRequest) {

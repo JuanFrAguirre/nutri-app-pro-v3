@@ -95,7 +95,7 @@ const LoginForm = () => {
               )}
               placeholder={field.placeholder}
               autoComplete={field.autocomplete ? 'on' : 'off'}
-              autoFocus={field.name === 'email'}
+              // autoFocus={field.name === 'email'}
               {...register(field.name as LoginFormDataKeys)}
             />
             {errors[field.name as LoginFormDataKeys] && (
@@ -110,7 +110,7 @@ const LoginForm = () => {
         <button className="btn btn-primary" disabled={isLoading}>
           Iniciar sesión
         </button>
-        <Link href={'/register'} className="btn">
+        <Link href={'/crear-cuenta'} className="btn">
           Crear cuenta
         </Link>
       </div>

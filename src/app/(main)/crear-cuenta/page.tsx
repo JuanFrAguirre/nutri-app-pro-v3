@@ -1,14 +1,15 @@
+import PageWrapper from '@/components/PageWrapper';
 import RegisterForm from './RegisterForm';
 
 const RegisterPage = () => {
   return (
-    <div className="space-y-10">
+    <PageWrapper>
       <p className="title">Crear cuenta</p>
       <p className="subtitle">
         Creá tu cuenta para comenzar a trackear tu nutrición
       </p>
       <RegisterForm />
-    </div>
+    </PageWrapper>
   );
 };
 

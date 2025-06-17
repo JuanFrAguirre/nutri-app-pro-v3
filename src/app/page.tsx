@@ -5,5 +5,5 @@ export default async function Home() {
   const isLoggedIn = await checkAuthServer();
   if (isLoggedIn) {
     redirect('/registros');
-  } else redirect('/login');
+  } else redirect('/iniciar-sesion');
 }
