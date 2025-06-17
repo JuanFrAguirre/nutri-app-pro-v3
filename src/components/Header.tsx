@@ -128,7 +128,7 @@ const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
   const router = useRouter();
 
   return (
-    <header className="fixed max-md:hidden top-0 inset-x-0 bg-brand-whiter shadow-md h-16 flex items-center">
+    <header className="fixed max-md:hidden top-0 inset-x-0 bg-brand-whiter shadow-md h-16 flex items-center header-mobile">
       <div
         className={clsx(
           'container mx-auto flex items-center',

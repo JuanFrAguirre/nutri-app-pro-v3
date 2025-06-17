@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+:root {
+  /* disponibles tras viewport-fit=cover */
+  --safe-top: env(safe-area-inset-top);
+  --safe-right: env(safe-area-inset-right);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+}
+
 @theme {
   --color-brand-white: #efefef;
   --color-brand-whiter: #fafafa;
@@ -9,6 +17,20 @@
   --color-brand-grayer: #a6a09b;
   --color-brand-pink: oklch(65.6% 0.241 354.308);
   --color-brand-pinker: oklch(59.2% 0.249 0.584);
+}
+
+html,
+body,
+#__next {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  min-height: calc(100vh + var(--safe-bottom));
+}
+
+.header-mobile {
+  padding-bottom: var(--safe-top);
 }
 
 body {
