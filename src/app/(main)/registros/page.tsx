@@ -4,7 +4,7 @@ import React from 'react';
 const LogsPage = () => {
   return (
     <PageWrapper>
-      <p className="title">Registros</p>
+      <p className="title">Registross</p>
     </PageWrapper>
   );
 };
