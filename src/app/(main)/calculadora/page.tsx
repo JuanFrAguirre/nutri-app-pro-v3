@@ -1,7 +1,13 @@
-import React from 'react';
+import PageWrapper from '@/components/PageWrapper';
+import ProductsCalculatorList from './ProductsCalculatorList';
 
-const CalcPage = () => {
-  return <div>CalcPage</div>;
+const ProductsCalculatorPage = async () => {
+  return (
+    <PageWrapper>
+      <p className="title">Calculadora</p>
+      <ProductsCalculatorList />
+    </PageWrapper>
+  );
 };
 
-export default CalcPage;
+export default ProductsCalculatorPage;

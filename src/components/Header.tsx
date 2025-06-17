@@ -1,9 +1,11 @@
 'use client';
+import { useProductStore } from '@/store/productStore';
+import { Product } from '@prisma/client';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { IoMdMenu } from 'react-icons/io';
+import { IoMdCart, IoMdMenu } from 'react-icons/io';
 
 const AUTH_LINKS = [
   {
@@ -30,6 +32,7 @@ const AUTH_LINKS = [
 
 const Header = () => {
   const pathname = usePathname();
+  const { products } = useProductStore();
   const LINKS = useMemo(
     () =>
       pathname === '/iniciar-sesion' ||
@@ -42,15 +45,23 @@ const Header = () => {
 
   return (
     <>
-      <MobileNav links={LINKS} pathname={pathname} />
-      <TabletAndUpwardsNav links={LINKS} pathname={pathname} />
+      <MobileNav links={LINKS} pathname={pathname} products={products} />
+      <TabletAndUpwardsNav
+        links={LINKS}
+        pathname={pathname}
+        products={products}
+      />
     </>
   );
 };
 
-type NavProps = { links: typeof AUTH_LINKS; pathname: string };
+type NavProps = {
+  links: typeof AUTH_LINKS;
+  pathname: string;
+  products: Product[];
+};
 
-const MobileNav = ({ links, pathname }: NavProps) => {
+const MobileNav = ({ links, pathname, products }: NavProps) => {
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,16 +84,36 @@ const MobileNav = ({ links, pathname }: NavProps) => {
         >
           <h1>NutriAppPro</h1>
         </button>
+
+        {/* FIXED BUTTONS */}
         {!!links.length && (
           <nav className="relative">
+            {/* MENU BUTTON */}
             <button
-              className="fixed bottom-10 right-6 bg-brand-whiter border border-brand-gray/30 p-1 rounded-xs shadow-xl"
+              className="fixed bottom-10 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20"
               onClick={() => setIsMenuOpen((prev) => !prev)}
             >
               <IoMdMenu
-                className={clsx('text-4xl transition-all duration-500')}
+                className={clsx('w-10 h-10 transition-all duration-500')}
               />
             </button>
+
+            {/* CALCULATOR/STORE BUTTON */}
+            {!!products.length && (
+              <Link
+                href={'/calculadora'}
+                className="fixed bottom-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20"
+              >
+                <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
+                  <p className="text-brand-whiter text-xs font-semibold">
+                    {products.length}
+                  </p>
+                </div>
+                <IoMdCart
+                  className={clsx('w-10 h-10 transition-all duration-500')}
+                />
+              </Link>
+            )}
             <div
               onClick={() => setIsMenuOpen(false)}
               className={clsx(
