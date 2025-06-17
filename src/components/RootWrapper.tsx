@@ -1,10 +1,10 @@
 'use client';
-import React from 'react';
-import { Slide, ToastContainer } from 'react-toastify';
-import LoadingSpinner from './LoadingSpinner';
 import { LoadingProvider } from '@/contexts/LoadingContext';
 import clsx from 'clsx';
+import React from 'react';
+import { Slide, ToastContainer } from 'react-toastify';
 import Header from './Header';
+import LoadingSpinner from './LoadingSpinner';
 
 const RootWrapper = ({
   children,
