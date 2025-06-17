@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
       return Response.json(
-        { message: 'Credenciales incorrectas' },
+        { message: 'Contraseña incorrecta' },
         { status: 401 },
       );
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       maxAge: 1 * 60 * 60,
       path: '/',
     });
-    return Response.json({ message: 'Login successful', user, token });
+    return Response.json({ message: 'Login exitoso', user, token });
   } catch (error) {
     console.error(error);
     return Response.json(

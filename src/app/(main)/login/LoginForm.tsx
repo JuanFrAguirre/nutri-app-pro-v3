@@ -1,7 +1,7 @@
 'use client';
 import { useLoadingContext } from '@/contexts/LoadingContext';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -67,8 +67,12 @@ const LoginForm = () => {
       await axios.post('/api/login', data);
       router.push('/');
     } catch (error) {
-      console.error(error);
-      toast.error('Credenciales incorrectas');
+      if (error instanceof AxiosError) {
+        console.error(error.response?.data.message);
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error('Ha ocurrido un error al iniciar sesión');
+      }
     } finally {
       setIsLoading(false);
     }
