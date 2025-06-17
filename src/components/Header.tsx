@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { ImMenu, ImMenu2, ImMenu3, ImMenu4 } from 'react-icons/im';
 import { IoMdMenu } from 'react-icons/io';
 
 const AUTH_LINKS = [
