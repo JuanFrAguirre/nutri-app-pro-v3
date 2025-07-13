@@ -1,16 +1,16 @@
 'use client';
 import { useProductStore } from '@/store/productStore';
-import { Product } from '@prisma/client';
+import { ProductWithQuantity } from '@/types/types';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { IoMdCart, IoMdMenu } from 'react-icons/io';
+import { IoMdCalculator, IoMdMenu } from 'react-icons/io';
 
 const AUTH_LINKS = [
   {
     label: 'Registros',
-    href: '/registros',
+    href: '/registros?date=' + new Date().toISOString().split('T')[0],
   },
   {
     label: 'Comidas',
@@ -58,27 +58,30 @@ const Header = () => {
 type NavProps = {
   links: typeof AUTH_LINKS;
   pathname: string;
-  products: Product[];
+  products: ProductWithQuantity[];
 };
 
 const MobileNav = ({ links, pathname, products }: NavProps) => {
-  const router = useRouter();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNavigate = () => {
     setIsMenuOpen(false);
   };
   return (
-    <header className="fixed top-0 md:hidden inset-x-0 bg-brand-whiter shadow-xl h-12 md:h-16 flex items-center pt-safe">
+    <header className="fixed top-0 md:hidden inset-x-0 bg-brand-whiter shadow-xl h-12 md:h-16 flex items-center pt-safe z-[20]">
       <div
         className={clsx('container mx-auto flex items-center justify-center')}
       >
         <button
           onClick={() => {
-            if (pathname === '/registros' || pathname === '/iniciar-sesion')
+            if (
+              pathname ===
+                '/registros?date=' + new Date().toISOString().split('T')[0] ||
+              pathname === '/iniciar-sesion'
+            )
               return;
-            router.push('/');
+            window.location.href =
+              '/registros?date=' + new Date().toISOString().split('T')[0];
           }}
           className="text-2xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100"
         >
@@ -99,7 +102,7 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
             </button>
 
             {/* CALCULATOR/STORE BUTTON */}
-            {!!products.length && (
+            {!!products.length && pathname !== '/calculadora' && (
               <Link
                 href={'/calculadora'}
                 className="fixed bottom-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20"
@@ -109,7 +112,7 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
                     {products.length}
                   </p>
                 </div>
-                <IoMdCart
+                <IoMdCalculator
                   className={clsx('w-10 h-10 transition-all duration-500')}
                 />
               </Link>
@@ -129,20 +132,38 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
                   : 'translate-x-[125%] translate-y-[20%]',
               )}
             >
-              {links.map((link) => (
-                <Link
-                  onClick={handleNavigate}
-                  key={link.label}
-                  href={link.href}
-                  className={clsx(
-                    'px-4 py-2 hover:bg-brand-black hover:text-brand-white w-full',
-                    pathname.includes(link.href) &&
-                      'bg-brand-black text-brand-white',
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {links.map((link) => {
+                if (link.href.includes('/registros')) {
+                  return (
+                    <a
+                      onClick={handleNavigate}
+                      key={link.label}
+                      href={link.href}
+                      className={clsx(
+                        'px-4 py-2 hover:bg-brand-black hover:text-brand-white w-full',
+                        pathname.includes(link.href) &&
+                          'bg-brand-black text-brand-white',
+                      )}
+                    >
+                      {link.label}
+                    </a>
+                  );
+                }
+                return (
+                  <Link
+                    onClick={handleNavigate}
+                    key={link.label}
+                    href={link.href}
+                    className={clsx(
+                      'px-4 py-2 hover:bg-brand-black hover:text-brand-white w-full',
+                      pathname.includes(link.href) &&
+                        'bg-brand-black text-brand-white',
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
           </nav>
         )}
@@ -152,7 +173,7 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
 };
 
 const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
-  const router = useRouter();
+  const { products } = useProductStore();
 
   return (
     <header className="fixed max-md:hidden top-0 inset-x-0 bg-brand-whiter shadow-md h-16 flex items-center">
@@ -166,28 +187,73 @@ const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
       >
         <button
           onClick={() => {
-            if (pathname === '/registros' || pathname === '/iniciar-sesion')
+            if (
+              pathname ===
+                '/registros?date=' + new Date().toISOString().split('T')[0] ||
+              pathname === '/iniciar-sesion'
+            )
               return;
-            router.push('/');
+            window.location.href =
+              '/registros?date=' + new Date().toISOString().split('T')[0];
           }}
           className="text-2xl lg:text-3xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 py-[14px]"
         >
           <h1>NutriAppPro</h1>
         </button>
+
+        {/* CALCULATOR/STORE BUTTON */}
+        {!!products.length && pathname !== '/calculadora' && (
+          <Link
+            href={'/calculadora'}
+            className="fixed top-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20 flex items-center"
+          >
+            {/* <p>Productos en calculadora</p> */}
+            <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
+              <p className="text-brand-whiter text-sm font-bold">
+                {products.length}
+              </p>
+            </div>
+            <IoMdCalculator
+              className={clsx('w-12 h-12 transition-all duration-500')}
+            />
+          </Link>
+        )}
+
         <nav className="flex items-center">
-          {links.map((link) => (
-            <Link
-              key={link.label}
-              className={clsx(
-                'font-medium p-3 py-[22px] lg:px-6 lg:py-5 link max-lg:text-sm text-shadow-md text-shadow-transparent rounded-none!',
-                'hover:text-brand-white hover:bg-brand-black',
-                pathname.includes(link.href) ? 'bg-brand-black text-white' : '',
-              )}
-              href={link.href}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            if (link.href.includes('/registros')) {
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className={clsx(
+                    'font-medium p-3 py-[22px] lg:px-6 lg:py-5 link max-lg:text-sm text-shadow-md text-shadow-transparent rounded-none!',
+                    'hover:text-brand-white hover:bg-brand-black',
+                    pathname.includes(link.href)
+                      ? 'bg-brand-black text-white'
+                      : '',
+                  )}
+                >
+                  {link.label}
+                </a>
+              );
+            }
+            return (
+              <Link
+                key={link.label}
+                className={clsx(
+                  'font-medium p-3 py-[22px] lg:px-6 lg:py-5 link max-lg:text-sm text-shadow-md text-shadow-transparent rounded-none!',
+                  'hover:text-brand-white hover:bg-brand-black',
+                  pathname.includes(link.href)
+                    ? 'bg-brand-black text-white'
+                    : '',
+                )}
+                href={link.href}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>

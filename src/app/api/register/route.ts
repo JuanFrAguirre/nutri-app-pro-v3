@@ -1,5 +1,4 @@
-import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import axios from 'axios';
 import { NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -8,29 +7,16 @@ export async function POST(request: NextRequest) {
     if (!email || !password || !firstName || !lastName)
       return Response.json({ message: 'Missing data' }, { status: 400 });
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    await axios.post(process.env.BACKEND_URL + '/auth/signup', {
+      email,
+      password,
+      firstName,
+      lastName,
     });
-
-    if (existingUser)
-      return Response.json({ message: 'User already exists' }, { status: 400 });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        firstName,
-        lastName,
-      },
-    });
-
-    const { password: _, ...userDataSansPassword } = user;
 
     return Response.json(
       {
         message: 'User created successfully',
-        user: userDataSansPassword,
       },
       { status: 201 },
     );

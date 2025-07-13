@@ -1,12 +1,12 @@
-import { Product } from '@prisma/client';
+import { ProductWithQuantity } from '@/types/types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 type ProductState = {
-  products: Product[];
-  addProductToStore: (product: Product) => void;
-  removeProductFromStore: (product: Product) => void;
-  editProductInStore: (product: Product) => void;
+  products: ProductWithQuantity[];
+  addProductToStore: (product: ProductWithQuantity) => void;
+  removeProductFromStore: (id: string) => void;
+  editProductInStore: (product: ProductWithQuantity) => void;
   clearProductsStore: () => void;
 };
 
@@ -21,19 +21,21 @@ export const useProductStore = create<ProductState>()(
             ...products,
             {
               ...product,
+              quantity: product.quantity || 1,
+              quantityType: product.quantityType || 'absolute',
             },
           ],
         });
       },
-      removeProductFromStore: (product) => {
+      removeProductFromStore: (id) => {
         const { products } = get();
-        set({ products: products.filter((p) => p.id !== product.id) });
+        set({ products: products.filter((p) => p._id !== id) });
       },
       editProductInStore: (product) => {
         const { products } = get();
         set({
           products: products.map((eachProduct) =>
-            eachProduct.id === product.id ? product : eachProduct,
+            eachProduct._id === product._id ? product : eachProduct,
           ),
         });
       },

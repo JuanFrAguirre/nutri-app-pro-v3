@@ -1,3 +1,4 @@
+'use client';
 import { useLoadingContext } from '@/contexts/LoadingContext';
 import clsx from 'clsx';
 import React from 'react';
@@ -9,7 +10,7 @@ const LoadingSpinner = () => {
   return (
     <div
       className={clsx(
-        'fixed inset-0 bg-brand-black/25 z-[100] grid place-items-center backdrop-blur-[1.5px] transition-all',
+        'fixed inset-0 bg-brand-black/50 z-[100] grid place-items-center backdrop-blur-[1.5px] transition-all',
         !isLoading && 'hidden',
       )}
     >

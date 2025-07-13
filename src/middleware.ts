@@ -12,14 +12,15 @@ interface JwtPayload {
 const protectedRoutes = {
   // API routes that require authentication
   api: [
-    '/api/users',
     '/api/meals',
+    '/api/products',
+    '/api/logs',
     // Add more API routes here
   ],
   // Page routes that require authentication
   pages: [
     '/dashboard',
-    '/profile',
+    '/perfil',
     '/comidas',
     '/productos',
     '/calculadora',

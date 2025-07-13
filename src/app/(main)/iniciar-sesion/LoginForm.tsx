@@ -61,7 +61,6 @@ const LoginForm = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     try {
       setIsLoading(true);
       await axios.post('/api/login', data);
@@ -110,7 +109,7 @@ const LoginForm = () => {
         <button className="btn btn-primary" disabled={isLoading}>
           Iniciar sesión
         </button>
-        <Link href={'/crear-cuenta'} className="btn">
+        <Link href={'/crear-cuenta'} className="btn btn-plain">
           Crear cuenta
         </Link>
       </div>

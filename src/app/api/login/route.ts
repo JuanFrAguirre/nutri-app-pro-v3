@@ -1,39 +1,33 @@
-import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import { SignJWT } from 'jose';
+import axios from 'axios';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
-    const user = await prisma.user.findFirst({ where: { email } });
-    if (!user)
-      return Response.json(
-        { message: 'Usuario no encontrado' },
-        { status: 404 },
-      );
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
-      return Response.json(
-        { message: 'Contraseña incorrecta' },
-        { status: 401 },
-      );
-
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'secret');
-    const token = await new SignJWT({ id: user.id })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('1h')
-      .sign(secret);
+    const signInResponse = await axios.post(
+      process.env.BACKEND_URL + '/auth/signin',
+      {
+        email,
+        password,
+      },
+    );
+    const { token, sub } = signInResponse.data;
 
     const cookieStore = await cookies();
     cookieStore.set('Authorization', `Bearer ${token}`, {
-      httpOnly: true,
+      httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1 * 60 * 60,
       path: '/',
     });
-    return Response.json({ message: 'Login exitoso', user, token });
+    cookieStore.set('User', JSON.stringify({ id: sub, email }), {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1 * 60 * 60,
+      path: '/',
+    });
+    return Response.json({ message: 'Login exitoso', token });
   } catch (error) {
     console.error(error);
     return Response.json(

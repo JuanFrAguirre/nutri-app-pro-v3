@@ -1,10 +1,17 @@
 import PageWrapper from '@/components/PageWrapper';
-import React from 'react';
+import LogList from './LogList';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import React, { Suspense } from 'react';
 
-const LogsPage = () => {
+export const dynamic = 'force-dynamic';
+
+const LogsPage = async () => {
   return (
     <PageWrapper>
-      <p className="title">Registross</p>
+      <p className="title">Registros</p>
+      <Suspense fallback={<LoadingSpinner />}>
+        <LogList />
+      </Suspense>
     </PageWrapper>
   );
 };

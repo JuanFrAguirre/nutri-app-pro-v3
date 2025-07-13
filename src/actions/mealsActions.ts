@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { checkAuthServer } from './authActions';
-import { Product } from '@/types/types';
+import { Meal } from '../types/types';
 
-export const getProducts = async (): Promise<Product[]> => {
+export const getMeals = async (): Promise<Meal[]> => {
   const { headers } = await checkAuthServer();
   try {
-    const products = await axios.get(process.env.BACKEND_URL + '/products', {
+    const products = await axios.get(process.env.BACKEND_URL + '/meals', {
       headers,
     });
     return products.data;

@@ -161,7 +161,7 @@ const RegisterForm = () => {
         <button className="btn btn-primary" disabled={isLoading}>
           Crear cuenta
         </button>
-        <Link href={'/iniciar-sesion'} className="btn">
+        <Link href={'/iniciar-sesion'} className="btn btn-plain">
           Iniciar sesión
         </Link>
       </div>

@@ -10,7 +10,7 @@ const PageWrapper = ({
 }) => {
   return (
     <div
-      className={clsx('space-y-5 md:space-y-7 lg:space-y-10 grow', className)}
+      className={clsx('flex flex-col gap-5 md:gap-7 lg:gap-10 grow', className)}
     >
       {children}
     </div>

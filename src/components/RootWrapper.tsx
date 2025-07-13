@@ -27,12 +27,18 @@ const RootWrapper = ({
           position="bottom-right"
           toastClassName="toast-item"
         />
-        <Header />
 
-        <main className="px-5 py-10 md:py-20 md:pb-30 grow container mx-auto flex flex-col">
+        <main className="px-5 py-10 md:py-20 md:pb-30 grow container mx-auto flex max-lg:flex-col">
           {children}
+          {/* <div
+            className={clsx(
+              'max-lg:hidden transform transition bg-red-500',
+              !!products.length ? 'w-[500px]' : 'w-0',
+              )}
+              ></div> */}
         </main>
       </div>
+      <Header />
     </LoadingProvider>
   );
 };

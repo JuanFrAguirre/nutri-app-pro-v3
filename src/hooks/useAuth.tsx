@@ -18,7 +18,6 @@ const useAuth = () => {
   };
 
   useEffect(() => {
-    // check cookies for Authorization
     checkAuth();
   }, []);
   return { isLoggedIn, checkAuth };

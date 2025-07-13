@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Meal" ALTER COLUMN "userId" DROP NOT NULL;
