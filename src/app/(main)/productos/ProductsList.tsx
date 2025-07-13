@@ -6,16 +6,22 @@ import clsx from 'clsx';
 import { IoMdCheckmark, IoMdSearch } from 'react-icons/io';
 import { MdClose } from 'react-icons/md';
 import { Product } from '@/types/types';
+import { toast } from 'react-toastify';
+import { useLoadingContext } from '@/contexts/LoadingContext';
+import axios from 'axios';
+import useAuth from '@/hooks/useAuth';
 
-const ProductsList = ({ products }: { products: Product[] }) => {
+const ProductsList = () => {
   const {
     addProductToStore,
     removeProductFromStore,
     products: productsInStore,
   } = useProductStore();
 
+  const { isLoading, setIsLoading } = useLoadingContext();
   const [search, setSearch] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const { getHeaders } = useAuth();
 
   const handleProductClick = (product: Product) => {
     if (productsInStore.find((p) => p._id === product._id)) {
@@ -30,14 +36,32 @@ const ProductsList = ({ products }: { products: Product[] }) => {
   };
 
   useEffect(() => {
-    setFilteredProducts(
-      products.filter(
-        (p) =>
-          p.title.toLowerCase().includes(search.toLowerCase()) ||
-          p.tags?.toLowerCase().includes(search.toLowerCase()),
-      ),
-    );
-  }, [search, products]);
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const headers = await getHeaders();
+        const response: { data: Product[] } = await axios.get(
+          process.env.NEXT_PUBLIC_BACKEND_URL + '/products',
+          { headers },
+        );
+        setFilteredProducts(
+          response.data.filter(
+            (p) =>
+              p.title.toLowerCase().includes(search.toLowerCase()) ||
+              p.tags?.toLowerCase().includes(search.toLowerCase()),
+          ),
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error('Error al obtener los productos');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [search, setIsLoading, getHeaders]);
+
+  if (isLoading) return '';
 
   return (
     <div className="mb-20">

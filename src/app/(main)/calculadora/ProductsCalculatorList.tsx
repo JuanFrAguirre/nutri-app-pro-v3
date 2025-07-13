@@ -2,6 +2,7 @@
 import DividedTextLine from '@/components/DividedTextLine';
 import Modal from '@/components/Modal';
 import { useLoadingContext } from '@/contexts/LoadingContext';
+import useAuth from '@/hooks/useAuth';
 import { useModal } from '@/hooks/useModal';
 import { getUserData } from '@/lib/userData';
 import { useProductStore } from '@/store/productStore';
@@ -25,6 +26,7 @@ const ProductsCalculatorList = () => {
 
   const [products, setProducts] = useState<ProductWithQuantity[]>(cartProducts);
   const [mealName, setMealName] = useState('');
+  const { getHeaders } = useAuth();
 
   const { isOpen, setIsOpen } = useModal();
 
@@ -41,14 +43,19 @@ const ProductsCalculatorList = () => {
   const handleCreateMeal = async () => {
     setIsLoading(true);
     try {
-      await axios.post('/api/meals', {
-        title: mealName,
-        user: getUserData().id,
-        mealProducts: products.map((prod) => ({
-          product: prod._id,
-          quantity: prod.quantity,
-        })),
-      });
+      const headers = await getHeaders();
+      await axios.post(
+        process.env.NEXT_PUBLIC_BACKEND_URL + '/meals',
+        {
+          title: mealName,
+          user: getUserData().id,
+          mealProducts: products.map((prod) => ({
+            product: prod._id,
+            quantity: prod.quantity,
+          })),
+        },
+        { headers },
+      );
       clearProductsStore();
       toast.success('Comida creada correctamente');
       window.location.href = '/comidas';
@@ -92,14 +99,12 @@ const ProductsCalculatorList = () => {
       prev.map((product) => {
         if (product._id === id) {
           if (value === 'relative') {
-            console.log(`changing ${product.title} to ${value}`);
             updatedProduct = {
               ...product,
               quantityType: value,
               quantity: product.presentationSize,
             };
           } else {
-            console.log(`changing ${product.title} to ${value}`);
             updatedProduct = {
               ...product,
               quantityType: value,

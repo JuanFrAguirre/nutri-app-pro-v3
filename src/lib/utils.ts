@@ -9,7 +9,7 @@ export const formatDate = (date: string) => {
 
 export const customFixedRound = (value: number, rounded: boolean = false) => {
   if (value % 1 === 0) {
-    return value;
+    return String(value);
   }
-  return rounded ? Math.round(value) : value.toFixed(2);
+  return rounded ? String(Math.round(value)) : value.toFixed(2);
 };
