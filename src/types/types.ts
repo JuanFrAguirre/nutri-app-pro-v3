@@ -14,6 +14,13 @@ export type Product = {
   MealProduct?: unknown;
 };
 
+export type Macros = 'calories' | 'fats' | 'carbs' | 'protein';
+export type MacrosSpanish =
+  | 'Calorías'
+  | 'Grasas'
+  | 'Carbohidratos'
+  | 'Proteínas';
+
 export type ProductWithQuantity = Product & {
   quantity: number;
   quantityType: 'absolute' | 'relative';
@@ -28,6 +35,12 @@ export type MealProduct = {
   >;
 };
 
+export type LogProduct = {
+  _id: string;
+  quantity: number;
+  product: Product;
+};
+
 export type Meal = {
   _id: string;
   title: string;
@@ -37,12 +50,6 @@ export type Meal = {
 
 export type MealWithQuantity = Meal & {
   quantity: number;
-};
-
-export type LogProduct = {
-  _id: string;
-  quantity: number;
-  product: Product;
 };
 
 export type LogProductForPOST = {

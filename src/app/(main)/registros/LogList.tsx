@@ -4,7 +4,12 @@ import DividedTextLine from '@/components/DividedTextLine';
 import DividerLine from '@/components/DividerLine';
 import Modal from '@/components/Modal';
 import { useLoadingContext } from '@/contexts/LoadingContext';
-import { customFixedRound } from '@/lib/utils';
+import {
+  customFixedRound,
+  getTotalMacros,
+  macrosIndexed,
+  macrosKeys,
+} from '@/lib/utils';
 import {
   Log,
   Meal,
@@ -45,6 +50,8 @@ const LogList = () => {
 
   const [date, setDate] = useState<string>(logDate);
   const [log, setLog] = useState<Log | null>(null);
+  // const [bufferLogs, setBufferLogs] = useState<Log[]>([]);
+  // const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [selectedMeals, setSelectedMeals] = useState<MealWithQuantity[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<
     ProductWithQuantity[]
@@ -197,31 +204,58 @@ const LogList = () => {
     }
   }, [getHeaders]);
 
-  const handleDeleteProductOrMealFromEntry = async (
-    id: string,
-    type: 'product' | 'meal',
-  ) => {
-    try {
-      if (confirm('¿Estás seguro de querer eliminar esta entrada?')) {
+  const handleDeleteProductOrMealFromEntry = useCallback(
+    async (id: string, type: 'product' | 'meal') => {
+      try {
+        if (confirm('¿Estás seguro de querer eliminar esta entrada?')) {
+          const headers = await getHeaders();
+          setIsLoading(true);
+          await axios.delete(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}`,
+            {
+              headers,
+              data: { type },
+            },
+          );
+          handleFetchLog(date);
+          toast.success('Entrada eliminada correctamente');
+        } else return;
+      } catch (error) {
+        console.error(error);
+        toast.error('Error al eliminar la entrada', { autoClose: false });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [date, getHeaders, handleFetchLog, setIsLoading],
+  );
+
+  const handleUpdateProductOrMealQuantityFromEntry = useCallback(
+    async (id: string, type: 'product' | 'meal', quantity: number) => {
+      try {
         const headers = await getHeaders();
         setIsLoading(true);
-        await axios.delete(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}`,
-          {
-            headers,
-            data: { type },
-          },
+        console.log(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}/quantity`,
+          { type, quantity },
+          { headers },
+        );
+        await axios.put(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}/quantity`,
+          { type, quantity },
+          { headers },
         );
         handleFetchLog(date);
-        toast.success('Entrada eliminada correctamente');
-      } else return;
-    } catch (error) {
-      console.error(error);
-      toast.error('Error al eliminar la entrada');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        toast.success('Cantidad actualizada correctamente');
+      } catch (error) {
+        console.error(error);
+        toast.error('Error al actualizar la cantidad');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [date, getHeaders, handleFetchLog, setIsLoading],
+  );
 
   useEffect(() => {
     handleFetchLog(logDate);
@@ -230,6 +264,7 @@ const LogList = () => {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      {/* DATE SELECTOR */}
       <div className="flex items-center gap-4">
         <button
           className="btn-primary btn"
@@ -250,6 +285,7 @@ const LogList = () => {
         </button>
       </div>
 
+      {/* ADD TO LOG BUTTON */}
       <button
         className="btn-plain btn py-2! px-4! border-light rounded-sm! text-sm!"
         onClick={() => setIsOpen(true)}
@@ -259,6 +295,7 @@ const LogList = () => {
       </button>
       {/* CURRENT DATE LOG MEALS & PRODUCTS */}
       {!log || (!log?.logMeals.length && !log?.logProducts.length) ? (
+        // NO LOG
         <div className="flex flex-col items-center gap-4 justify-between">
           <div className="h-50 grid place-items-center">
             <p className="text-brand-black text-lg font-light">
@@ -268,249 +305,226 @@ const LogList = () => {
         </div>
       ) : (
         <div>
-          <div className="flex flex-col p-2 gap-4">
-            {!!log?.logMeals.length &&
-              log?.logMeals
-                ?.sort((a, b) => a.meal.title.localeCompare(b.meal.title))
-                .map((logMeal) => (
-                  <div
-                    key={logMeal._id}
-                    className="flex flex-col gap-4 border-light p-4 bg-brand-whiter rounded-sm"
-                  >
-                    <div className="flex items-center">
-                      <p className="grow font-semibold text-center">
-                        {logMeal.meal.title}
-                      </p>
-                      <button
-                        className="self-start"
-                        onClick={() => {
-                          handleDeleteProductOrMealFromEntry(
-                            logMeal._id,
-                            'meal',
-                          );
-                        }}
-                      >
-                        <FaTrashAlt className="text-red-700 h-4 w-4" />
-                      </button>
-                    </div>
-                    <DividerLine />
-                    <div className="flex items-center gap-4 justify-between max-md:flex-col">
-                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 grow">
-                        {logMeal.meal.mealProducts.map((mealProduct) => (
-                          <div
-                            key={mealProduct.product._id}
-                            className="flex items-center gap-4 flex-col border-light rounded-sm p-4"
-                          >
-                            <div className="grow flex items-center justify-center">
-                              <p className="custom-ellipsis text-center text-sm">
-                                {mealProduct.product.title}
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                              <Image
-                                src={mealProduct.product.image || ''}
-                                width={200}
-                                height={200}
-                                alt={mealProduct.product.title}
-                                className="w-20 h-20 border-light rounded-sm"
-                              />
-                              <p className="text-brand-black text-center font-semibold text-sm">
-                                x{' '}
-                                {Number(
-                                  customFixedRound(
-                                    mealProduct.quantity /
-                                      mealProduct.product.presentationSize,
-                                    true,
-                                  ),
-                                ) >= 1
-                                  ? customFixedRound(
+          <div className="max-h-[50vh] pb-10 overflow-y-auto">
+            {/* LOG MEALS */}
+            <div className="flex flex-col p-2 gap-4">
+              {!!log?.logMeals.length &&
+                log?.logMeals
+                  ?.sort((a, b) => a.meal.title.localeCompare(b.meal.title))
+                  .map((logMeal) => (
+                    <div
+                      key={logMeal._id}
+                      className="flex flex-col gap-4 border-light p-4 bg-brand-whiter rounded-sm shadow-xl"
+                    >
+                      <div className="flex items-center">
+                        <p className="grow font-semibold text-center">
+                          {logMeal.meal.title}
+                        </p>
+                        <button
+                          className=""
+                          onClick={() => {
+                            handleDeleteProductOrMealFromEntry(
+                              logMeal._id,
+                              'meal',
+                            );
+                          }}
+                        >
+                          <FaTrashAlt className="text-red-700 h-4 w-4" />
+                        </button>
+                      </div>
+                      <DividerLine />
+                      <div className="flex items-center gap-4 justify-between max-md:flex-col">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 grow">
+                          {logMeal.meal.mealProducts.map((mealProduct) => (
+                            <div
+                              key={mealProduct.product._id}
+                              className="flex items-center gap-4 flex-col border-light rounded-sm p-4 shadow-md"
+                            >
+                              <div className="grow flex items-center justify-center">
+                                <p className="custom-ellipsis text-center text-sm">
+                                  {mealProduct.product.title}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <Image
+                                  src={mealProduct.product.image || ''}
+                                  width={200}
+                                  height={200}
+                                  alt={mealProduct.product.title}
+                                  className="w-20 h-20 border-light rounded-sm"
+                                />
+                                <p className="text-brand-black text-center font-semibold text-sm">
+                                  x{' '}
+                                  {Number(
+                                    customFixedRound(
                                       mealProduct.quantity /
                                         mealProduct.product.presentationSize,
                                       true,
-                                    ) + ' unidades'
-                                  : mealProduct.quantity + 'g'}
-                              </p>
+                                    ),
+                                  ) >= 1
+                                    ? customFixedRound(
+                                        mealProduct.quantity /
+                                          mealProduct.product.presentationSize,
+                                        true,
+                                      ) + ' unidades'
+                                    : mealProduct.quantity + 'g'}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="md:min-w-[20%] max-md:w-full">
-                        <p className="text-xs text-brand-grayer text-center mb-2">
-                          {logMeal.quantity}
-                          {logMeal.quantity > 1 ? ' unidades' : ' unidad'}
-                        </p>
-                        <DividedTextLine
-                          first="Calorías"
-                          second={
-                            customFixedRound(
-                              Number(
-                                logMeal.meal.mealProducts.reduce(
-                                  (acc, curr) =>
-                                    acc +
-                                    curr.product.calories *
-                                      curr.quantity *
-                                      0.01,
-                                  0,
-                                ) * logMeal.quantity,
-                              ),
-                              true,
-                            ) + 'kcal'
-                          }
-                        />
-                        <DividedTextLine
-                          first="Grasas"
-                          second={
-                            customFixedRound(
-                              Number(
-                                logMeal.meal.mealProducts.reduce(
-                                  (acc, curr) =>
-                                    acc +
-                                    curr.product.fats * curr.quantity * 0.01,
-                                  0,
-                                ) * logMeal.quantity,
-                              ),
-                              true,
-                            ) + 'g'
-                          }
-                        />
-                        <DividedTextLine
-                          first="Carbohidratos"
-                          second={
-                            customFixedRound(
-                              Number(
-                                logMeal.meal.mealProducts.reduce(
-                                  (acc, curr) =>
-                                    acc +
-                                    curr.product.carbs * curr.quantity * 0.01,
-                                  0,
-                                ) * logMeal.quantity,
-                              ),
-                              true,
-                            ) + 'g'
-                          }
-                        />
-                        <DividedTextLine
-                          first="Proteína"
-                          second={
-                            customFixedRound(
-                              Number(
-                                logMeal.meal.mealProducts.reduce(
-                                  (acc, curr) =>
-                                    acc +
-                                    curr.product.protein * curr.quantity * 0.01,
-                                  0,
-                                ) * logMeal.quantity,
-                              ),
-                              true,
-                            ) + 'g'
-                          }
-                        />
+                          ))}
+                        </div>
+                        <div className="md:min-w-[20%] max-md:w-full">
+                          <p className="text-xs text-brand-grayer text-center mb-2">
+                            {logMeal.quantity}
+                            {logMeal.quantity > 1 ? ' unidades' : ' unidad'}
+                          </p>
+                          {macrosKeys.map((mk) => (
+                            <DividedTextLine
+                              key={mk}
+                              first={macrosIndexed[mk].label}
+                              second={
+                                customFixedRound(
+                                  Number(
+                                    getTotalMacros('logMeal', [logMeal])[mk],
+                                  ),
+                                  true,
+                                ) + macrosIndexed[mk].unit
+                              }
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+            </div>
+
+            {/* LOG PRODUCTS */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 p-2">
+              {!!log?.logProducts.length &&
+                log?.logProducts
+                  ?.sort((a, b) =>
+                    a.product.title.localeCompare(b.product.title),
+                  )
+                  .map((product) => (
+                    <div
+                      key={product._id}
+                      className="flex flex-col gap-4 border-light p-4 relative bg-brand-whiter rounded-sm shadow-xl"
+                    >
+                      <div className="flex grow items-center">
+                        <p className="grow font-semibold text-center">
+                          {product.product.title}
+                        </p>
+                      </div>
+                      <DividerLine />
+                      <div className="flex items-center gap-4 justify-between max-md:flex-col">
+                        <div className="flex items-center gap-2 justify-between grow">
+                          <Image
+                            src={product.product.image || ''}
+                            width={200}
+                            height={200}
+                            alt={product.product.title}
+                            className="w-20 h-20 border-light rounded-sm"
+                          />
+                        </div>
+                        <div className="md:min-w-[50%] max-md:w-full">
+                          {macrosKeys.map((mk) => (
+                            <DividedTextLine
+                              key={mk}
+                              first={macrosIndexed[mk].label}
+                              second={
+                                customFixedRound(
+                                  Number(
+                                    getTotalMacros('logProduct', [product])[mk],
+                                  ),
+                                  true,
+                                ) + macrosIndexed[mk].unit
+                              }
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center mb-2">
+                        <button
+                          onClick={() => {
+                            if (
+                              product.quantity ===
+                              product.product.presentationSize
+                            )
+                              handleDeleteProductOrMealFromEntry(
+                                product._id,
+                                'product',
+                              );
+                            else
+                              handleUpdateProductOrMealQuantityFromEntry(
+                                product._id,
+                                'product',
+                                product.quantity -
+                                  product.product.presentationSize,
+                              );
+                          }}
+                          className={clsx(
+                            'btn rounded-sm!',
+                            product.quantity ===
+                              product.product.presentationSize
+                              ? // ? 'btn-danger-plain'
+                                'btn-plain'
+                              : 'btn-plain',
+                          )}
+                        >
+                          {product.quantity ===
+                          product.product.presentationSize ? (
+                            <FaTrashAlt className="w-5 h-5" />
+                          ) : (
+                            <FaMinus className="w-5 h-5" />
+                          )}
+                        </button>
+                        <p className="font-semibold text-lg text-center text-brand-gray">
+                          {customFixedRound(
+                            product.quantity / product.product.presentationSize,
+                            true,
+                          )}
+                          {product.quantity / product.product.presentationSize >
+                          1
+                            ? ' unidades'
+                            : ' unidad'}
+                        </p>
+                        <button
+                          onClick={() => {
+                            handleUpdateProductOrMealQuantityFromEntry(
+                              product._id,
+                              'product',
+                              product.quantity +
+                                product.product.presentationSize,
+                            );
+                          }}
+                          className="btn btn-plain rounded-sm!"
+                        >
+                          <FaPlus className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 p-2">
-            {!!log?.logProducts.length &&
-              log?.logProducts
-                ?.sort((a, b) => a.product.title.localeCompare(b.product.title))
-                .map((product) => (
-                  <div
-                    key={product._id}
-                    className="flex flex-col gap-4 border-light p-4 relative bg-brand-whiter rounded-sm"
-                  >
-                    <div className="flex grow items-center">
-                      <p className="grow font-semibold text-center">
-                        {product.product.title}
-                      </p>
-                      <button
-                        className="self-start"
-                        onClick={() => {
-                          handleDeleteProductOrMealFromEntry(
-                            product._id,
-                            'product',
-                          );
-                        }}
-                      >
-                        <FaTrashAlt className="text-red-700 h-4 w-4" />
-                      </button>
-                    </div>
-                    <DividerLine />
-                    <div className="flex items-center gap-4 justify-between max-md:flex-col">
-                      <div className="flex items-center gap-2 justify-center grow">
-                        <Image
-                          src={product.product.image || ''}
-                          width={200}
-                          height={200}
-                          alt={product.product.title}
-                          className="w-20 h-20 border-light rounded-sm"
-                        />
-                      </div>
-                      <div className="md:min-w-[50%] max-md:w-full">
-                        <p className="text-xs text-brand-grayer text-center mb-2">
-                          {product.quantity}
-                          {product.quantity > 1 ? ' unidades' : ' unidad'}
-                        </p>
-                        <DividedTextLine
-                          first="Calorías"
-                          second={
-                            customFixedRound(
-                              Number(
-                                product.quantity *
-                                  product.product.calories *
-                                  0.01 *
-                                  product.product.presentationSize,
-                              ),
-                              true,
-                            ) + 'kcal'
-                          }
-                        />
-                        <DividedTextLine
-                          first="Grasas"
-                          second={
-                            customFixedRound(
-                              Number(
-                                product.quantity *
-                                  product.product.fats *
-                                  0.01 *
-                                  product.product.presentationSize,
-                              ),
-                              true,
-                            ) + 'g'
-                          }
-                        />
-                        <DividedTextLine
-                          first="Carbohidratos"
-                          second={
-                            customFixedRound(
-                              Number(
-                                product.quantity *
-                                  product.product.carbs *
-                                  0.01 *
-                                  product.product.presentationSize,
-                              ),
-                              true,
-                            ) + 'g'
-                          }
-                        />
-                        <DividedTextLine
-                          first="Proteína"
-                          second={
-                            customFixedRound(
-                              Number(
-                                product.quantity *
-                                  product.product.protein *
-                                  0.01 *
-                                  product.product.presentationSize,
-                              ),
-                              true,
-                            ) + 'g'
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          <div className="bg-brand-whiter border-light shadow-xl p-4">
+            <p className="subtitle font-semibold!">Totales diarios</p>
+            {macrosKeys.map((mk) => (
+              <DividedTextLine
+                key={mk}
+                first={macrosIndexed[mk].label}
+                second={
+                  customFixedRound(
+                    Number(
+                      getTotalMacros('logMeal', log?.logMeals)[mk] +
+                        getTotalMacros('logProduct', log?.logProducts)[mk],
+                    ),
+                    true,
+                  ) + macrosIndexed[mk].unit
+                }
+                className="text-lg! font-semibold!"
+                classNameSecond="text-brand-blacker"
+              />
+            ))}
           </div>
         </div>
       )}
@@ -598,18 +612,28 @@ const LogList = () => {
                       <div
                         key={product._id}
                         className={clsx(
-                          'flex border rounded-sm items-center gap-2 p-2 justify-between cursor-pointer',
+                          'flex border rounded-sm items-center gap-2 p-2 cursor-pointer bg-brand-whiter mr-1',
                           product.quantity > 0
-                            ? 'border-brand-black bg-brand-whiter'
+                            ? 'border-brand-pink bg-brand-whiter'
                             : 'border-light',
                         )}
                         onClick={() => {
                           if (product.quantity === 0)
-                            handleProductQuantity(product._id, 1);
+                            handleProductQuantity(
+                              product._id,
+                              product.presentationSize,
+                            );
                           else handleProductQuantity(product._id, 0);
                         }}
                       >
-                        <p>{product.title}</p>
+                        <Image
+                          src={product.image || ''}
+                          width={200}
+                          height={200}
+                          alt={product.title}
+                          className="w-20 h-20 border-light rounded-sm"
+                        />
+                        <p className="grow text-center">{product.title}</p>
                         <div className="flex items-center gap-2">
                           <button
                             className="btn btn-plain p-1! text-sm! rounded-xs"
@@ -617,21 +641,25 @@ const LogList = () => {
                               e.stopPropagation();
                               handleProductQuantity(
                                 product._id,
-                                product.quantity - 1,
+                                (product.quantity / product.presentationSize -
+                                  1) *
+                                  product.presentationSize,
                               );
                             }}
                             disabled={product.quantity === 0}
                           >
                             <FaMinus />
                           </button>
-                          <p>{product.quantity}</p>
+                          <p>{product.quantity / product.presentationSize}</p>
                           <button
                             className="btn btn-plain p-1! text-sm! rounded-xs"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleProductQuantity(
                                 product._id,
-                                product.quantity + 1,
+                                (product.quantity / product.presentationSize +
+                                  1) *
+                                  product.presentationSize,
                               );
                             }}
                           >
@@ -641,7 +669,7 @@ const LogList = () => {
                       </div>
                     ))}
               </div>
-              <div className="h-[10vh] overflow-y-auto border-light p-2 flex flex-col gap-2">
+              <div className="h-[25vh] overflow-y-auto border-light p-2 flex flex-col gap-2">
                 <p className="font-semibold text-brand-black! text-center">
                   Fecha: {date}
                 </p>
@@ -658,7 +686,7 @@ const LogList = () => {
                         <div key={sp._id}>
                           <DividedTextLine
                             first={sp.title}
-                            second={'x' + sp.quantity}
+                            second={'x' + sp.quantity / sp.presentationSize}
                           />
                         </div>
                       ))}
@@ -702,7 +730,7 @@ const LogList = () => {
                     !date
                   }
                 >
-                  Crear registro
+                  Añadir al registro
                 </button>
               </div>
             </div>
