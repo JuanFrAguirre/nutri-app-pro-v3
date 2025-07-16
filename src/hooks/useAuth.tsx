@@ -1,4 +1,7 @@
+import { User } from '@/types/types';
+import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const useAuth = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,6 +42,31 @@ const useAuth = () => {
     checkAuth();
   }, []);
   return { isLoggedIn, checkAuth, getHeaders, getUser };
+};
+
+export const useGetUser = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const { getHeaders } = useAuth();
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const headers = await getHeaders();
+        const response = await axios.get(
+          process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/me',
+          {
+            headers,
+          },
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error(error);
+        toast.error('Error al obtener datos del usuario');
+      }
+    };
+    getUser();
+  }, [getHeaders]);
+
+  return { user };
 };
 
 export default useAuth;

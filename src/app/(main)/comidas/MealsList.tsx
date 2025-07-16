@@ -5,7 +5,9 @@ import useAuth from '@/hooks/useAuth';
 import { MealWithQuantity } from '@/types/types';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { IoRestaurant } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
 const MealsList = () => {
@@ -37,7 +39,7 @@ const MealsList = () => {
 
   return (
     <>
-      {!!meals.length && (
+      {!!meals.length ? (
         <div className="flex flex-col gap-10 xl:grid grid-cols-2">
           {meals.map((meal) => (
             <div
@@ -84,6 +86,20 @@ const MealsList = () => {
               </div>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-10">
+          <p className="subtitle">
+            No hay comidas disponibles aún. Creá algunas para comenzar a
+            trackear tu nutrición!
+          </p>
+          <Link
+            href="/productos"
+            className="btn btn-plain font-semibold text-lg self-center flex items-center gap-4"
+          >
+            Crear comida
+            <IoRestaurant />
+          </Link>
         </div>
       )}
     </>

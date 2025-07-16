@@ -3,7 +3,7 @@ import { useProductStore } from '@/store/productStore';
 import { ProductWithQuantity } from '@/types/types';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { IoMdCalculator, IoMdMenu } from 'react-icons/io';
 
@@ -25,9 +25,13 @@ const AUTH_LINKS = [
     href: '/calculadora',
   },
   {
-    label: 'Cerrar sesión',
-    href: '/logout',
+    label: 'Dashboard',
+    href: '/dashboard',
   },
+  // {
+  //   label: 'Cerrar sesión',
+  //   href: '/logout',
+  // },
 ];
 
 const Header = () => {
@@ -63,10 +67,11 @@ type NavProps = {
 
 const MobileNav = ({ links, pathname, products }: NavProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const router = useRouter();
   const handleNavigate = () => {
     setIsMenuOpen(false);
   };
+
   return (
     <header className="fixed top-0 md:hidden inset-x-0 bg-brand-whiter shadow-xl h-12 md:h-16 flex items-center pt-safe z-[20]">
       <div
@@ -74,14 +79,11 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
       >
         <button
           onClick={() => {
-            if (
-              pathname ===
-                '/registros?date=' + new Date().toISOString().split('T')[0] ||
-              pathname === '/iniciar-sesion'
-            )
-              return;
-            window.location.href =
-              '/registros?date=' + new Date().toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
+            if (pathname === '/iniciar-sesion') return;
+            if (pathname.includes('/registros'))
+              window.location.href = '/registros?date=' + today;
+            else router.push('/registros?date=' + today);
           }}
           className="text-2xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100"
         >
@@ -102,21 +104,24 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
             </button>
 
             {/* CALCULATOR/STORE BUTTON */}
-            {!!products.length && pathname !== '/calculadora' && (
-              <Link
-                href={'/calculadora'}
-                className="fixed bottom-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20"
-              >
-                <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
-                  <p className="text-brand-whiter text-xs font-semibold">
-                    {products.length}
-                  </p>
-                </div>
-                <IoMdCalculator
-                  className={clsx('w-10 h-10 transition-all duration-500')}
-                />
-              </Link>
-            )}
+            {!!products.length &&
+              !pathname.includes('/calculadora') &&
+              !pathname.includes('/registros') && (
+                <Link
+                  href={'/calculadora'}
+                  className="fixed bottom-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20"
+                >
+                  <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
+                    <p className="text-brand-whiter text-xs font-semibold">
+                      {products.length}
+                    </p>
+                  </div>
+                  <IoMdCalculator
+                    className={clsx('w-10 h-10 transition-all duration-500')}
+                  />
+                </Link>
+              )}
+
             <div
               onClick={() => setIsMenuOpen(false)}
               className={clsx(
@@ -133,7 +138,10 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
               )}
             >
               {links.map((link) => {
-                if (link.href.includes('/registros')) {
+                if (
+                  link.href.includes('/registros') &&
+                  pathname.includes('/registros')
+                ) {
                   return (
                     <a
                       onClick={handleNavigate}
@@ -174,6 +182,7 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
 
 const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
   const { products } = useProductStore();
+  const router = useRouter();
 
   return (
     <header className="fixed max-md:hidden top-0 inset-x-0 bg-brand-whiter shadow-md h-16 flex items-center">
@@ -187,14 +196,11 @@ const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
       >
         <button
           onClick={() => {
-            if (
-              pathname ===
-                '/registros?date=' + new Date().toISOString().split('T')[0] ||
-              pathname === '/iniciar-sesion'
-            )
-              return;
-            window.location.href =
-              '/registros?date=' + new Date().toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
+            if (pathname === '/iniciar-sesion') return;
+            if (pathname.includes('/registros'))
+              window.location.href = '/registros?date=' + today;
+            else router.push('/registros?date=' + today);
           }}
           className="text-2xl lg:text-3xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 py-[14px]"
         >
@@ -202,26 +208,31 @@ const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
         </button>
 
         {/* CALCULATOR/STORE BUTTON */}
-        {!!products.length && pathname !== '/calculadora' && (
-          <Link
-            href={'/calculadora'}
-            className="fixed top-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20 flex items-center"
-          >
-            {/* <p>Productos en calculadora</p> */}
-            <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
-              <p className="text-brand-whiter text-sm font-bold">
-                {products.length}
-              </p>
-            </div>
-            <IoMdCalculator
-              className={clsx('w-12 h-12 transition-all duration-500')}
-            />
-          </Link>
-        )}
+        {!!products.length &&
+          pathname !== '/calculadora' &&
+          !pathname.includes('/registros') && (
+            <Link
+              href={'/calculadora'}
+              className="fixed top-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20 flex items-center"
+            >
+              {/* <p>Productos en calculadora</p> */}
+              <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
+                <p className="text-brand-whiter text-sm font-bold">
+                  {products.length}
+                </p>
+              </div>
+              <IoMdCalculator
+                className={clsx('w-12 h-12 transition-all duration-500')}
+              />
+            </Link>
+          )}
 
         <nav className="flex items-center">
           {links.map((link) => {
-            if (link.href.includes('/registros')) {
+            if (
+              link.href.includes('/registros') &&
+              pathname.includes('/registros')
+            ) {
               return (
                 <a
                   key={link.label}

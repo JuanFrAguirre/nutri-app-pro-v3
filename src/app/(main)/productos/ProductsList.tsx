@@ -20,6 +20,7 @@ const ProductsList = () => {
 
   const { isLoading, setIsLoading } = useLoadingContext();
   const [search, setSearch] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const { getHeaders } = useAuth();
 
@@ -35,6 +36,15 @@ const ProductsList = () => {
     }
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setFilteredProducts(
+      products.filter((p) =>
+        p.title.toLowerCase().includes(e.target.value.toLowerCase()),
+      ),
+    );
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -44,13 +54,8 @@ const ProductsList = () => {
           process.env.NEXT_PUBLIC_BACKEND_URL + '/products',
           { headers },
         );
-        setFilteredProducts(
-          response.data.filter(
-            (p) =>
-              p.title.toLowerCase().includes(search.toLowerCase()) ||
-              p.tags?.toLowerCase().includes(search.toLowerCase()),
-          ),
-        );
+        setProducts(response.data);
+        setFilteredProducts(response.data);
       } catch (error) {
         console.error(error);
         toast.error('Error al obtener los productos');
@@ -59,7 +64,7 @@ const ProductsList = () => {
       }
     };
     fetchProducts();
-  }, [search, setIsLoading, getHeaders]);
+  }, [setIsLoading, getHeaders]);
 
   if (isLoading) return '';
 
@@ -75,7 +80,7 @@ const ProductsList = () => {
             'input-search focus-visible:border-transparent px-7 border-[1px] border-brand-blacker md:py-4! md:px-10! md:text-lg!',
           )}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearch}
           placeholder="Ej: arroz..."
         />
         {!!search && (
@@ -90,7 +95,6 @@ const ProductsList = () => {
       <div
         className={clsx(
           'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4',
-          // !!productsInStore.length && 'lg:grid-cols-3! xl:grid-cols-4!',
         )}
       >
         {filteredProducts.map((product: Product) => {

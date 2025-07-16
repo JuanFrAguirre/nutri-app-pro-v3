@@ -31,7 +31,7 @@ const Modal = ({
       />
       <div
         className={clsx(
-          'bg-brand-white p-6 rounded-xs shadow-xl z-10 max-w-lg w-full mx-4',
+          'bg-brand-white p-6 rounded-xs shadow-xl z-10 max-w-2xl w-full mx-4',
           className,
         )}
       >

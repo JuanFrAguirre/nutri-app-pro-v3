@@ -8,13 +8,20 @@ import {
   ProductWithQuantity,
 } from '@/types/types';
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: string, text: boolean = false) => {
   const dateObj = new Date(date);
-  return dateObj.toLocaleDateString('es-AR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  return text
+    ? dateObj.toLocaleDateString('es-AR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        weekday: 'long',
+      })
+    : dateObj.toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
 };
 
 export const macrosKeys: Macros[] = ['calories', 'fats', 'carbs', 'protein'];

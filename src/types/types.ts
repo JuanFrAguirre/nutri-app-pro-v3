@@ -82,3 +82,12 @@ export type LogForPOST = {
   logProducts?: LogProductForPOST[];
   logMeals?: LogMealForPOST[];
 };
+
+export type User = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+};

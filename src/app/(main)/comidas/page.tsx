@@ -1,8 +1,6 @@
 import PageWrapper from '@/components/PageWrapper';
 import MealsList from './MealsList';
 
-// export const dynamic = 'force-dynamic';
-
 const FoodsPage = () => {
   return (
     <>

@@ -33,6 +33,7 @@ import {
 import { toast } from 'react-toastify';
 import { useModal } from '../../../hooks/useModal';
 import useAuth from '@/hooks/useAuth';
+import { LuCalendarPlus } from 'react-icons/lu';
 
 const LogList = () => {
   const searchParams = useSearchParams();
@@ -274,7 +275,7 @@ const LogList = () => {
         >
           <FaArrowLeft />
         </button>
-        <p className="font-thin text-2xl">{date || logDate}</p>
+        <p className="font-thin text-2xl text-brand-pink">{date || logDate}</p>
         <button
           className="btn-primary btn"
           onClick={() => {
@@ -287,11 +288,15 @@ const LogList = () => {
 
       {/* ADD TO LOG BUTTON */}
       <button
-        className="btn-plain btn py-2! px-4! border-light rounded-sm! text-sm!"
         onClick={() => setIsOpen(true)}
         disabled={isLoading}
+        className="fixed max-md:bottom-28 right-6 bg-brand-whiter border border-brand-black p-1 rounded-sm shadow-xl shadow-brand-black/20 md:top-28 md:right-6"
       >
-        Añadir al registro
+        <LuCalendarPlus
+          className={clsx(
+            'w-10 h-10 md:w-12 md:h-12 transition-all duration-500',
+          )}
+        />
       </button>
       {/* CURRENT DATE LOG MEALS & PRODUCTS */}
       {!log || (!log?.logMeals.length && !log?.logProducts.length) ? (
@@ -305,43 +310,32 @@ const LogList = () => {
         </div>
       ) : (
         <div>
-          <div className="max-h-[50vh] pb-10 overflow-y-auto">
+          <div className="max-h-[50vh] pb-5 mb-3 md:mb-5 overflow-y-auto">
             {/* LOG MEALS */}
-            <div className="flex flex-col p-2 gap-4">
+            <div className="flex flex-col p-2 gap-4 xl:grid xl:grid-cols-2">
               {!!log?.logMeals.length &&
                 log?.logMeals
                   ?.sort((a, b) => a.meal.title.localeCompare(b.meal.title))
                   .map((logMeal) => (
                     <div
                       key={logMeal._id}
-                      className="flex flex-col gap-4 border-light p-4 bg-brand-whiter rounded-sm shadow-xl"
+                      className="flex flex-col max-md:gap-3 gap-4 border-light p-4 bg-brand-whiter rounded-sm shadow-xl"
                     >
-                      <div className="flex items-center">
-                        <p className="grow font-semibold text-center">
+                      <div className="h-12! flex items-center">
+                        <p className="grow font-semibold max-md:text-sm max-md:leading-none! text-center custom-ellipsis">
                           {logMeal.meal.title}
                         </p>
-                        <button
-                          className=""
-                          onClick={() => {
-                            handleDeleteProductOrMealFromEntry(
-                              logMeal._id,
-                              'meal',
-                            );
-                          }}
-                        >
-                          <FaTrashAlt className="text-red-700 h-4 w-4" />
-                        </button>
                       </div>
                       <DividerLine />
-                      <div className="flex items-center gap-4 justify-between max-md:flex-col">
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 grow">
+                      <div className="flex items-center max-md:gap-3 gap-4 justify-between max-md:flex-col">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 max-md:gap-3 gap-4 grow overflow-y-auto max-h-[450px]">
                           {logMeal.meal.mealProducts.map((mealProduct) => (
                             <div
                               key={mealProduct.product._id}
-                              className="flex items-center gap-4 flex-col border-light rounded-sm p-4 shadow-md"
+                              className="flex items-center max-md:gap-3 gap-4 flex-col border-light rounded-sm p-4 shadow-md"
                             >
                               <div className="grow flex items-center justify-center">
-                                <p className="custom-ellipsis text-center text-sm">
+                                <p className="custom-ellipsis text-center text-sm ">
                                   {mealProduct.product.title}
                                 </p>
                               </div>
@@ -373,25 +367,75 @@ const LogList = () => {
                             </div>
                           ))}
                         </div>
-                        <div className="md:min-w-[20%] max-md:w-full">
-                          <p className="text-xs text-brand-grayer text-center mb-2">
-                            {logMeal.quantity}
-                            {logMeal.quantity > 1 ? ' unidades' : ' unidad'}
-                          </p>
-                          {macrosKeys.map((mk) => (
-                            <DividedTextLine
-                              key={mk}
-                              first={macrosIndexed[mk].label}
-                              second={
-                                customFixedRound(
-                                  Number(
-                                    getTotalMacros('logMeal', [logMeal])[mk],
-                                  ),
-                                  true,
-                                ) + macrosIndexed[mk].unit
-                              }
-                            />
-                          ))}
+                        <div className="md:min-w-[20%] xl:min-w-[30%] max-md:w-full self-stretch flex flex-col justify-start max-md:flex-col-reverse max-md:gap-3 gap-4">
+                          <div className="flex flex-col justify-center md:items-center">
+                            <div className="flex flex-col-reverse max-md:flex-row justify-between items-center max-md:gap-3 gap-4 grow">
+                              <div className="flex gap-2 max-md:justify-between grow">
+                                <button
+                                  onClick={() => {
+                                    if (logMeal.quantity === 1)
+                                      handleDeleteProductOrMealFromEntry(
+                                        logMeal._id,
+                                        'meal',
+                                      );
+                                    else
+                                      handleUpdateProductOrMealQuantityFromEntry(
+                                        logMeal._id,
+                                        'meal',
+                                        logMeal.quantity - 1,
+                                      );
+                                  }}
+                                  className={clsx(
+                                    'btn rounded-sm! btn-primary',
+                                  )}
+                                >
+                                  {logMeal.quantity === 1 ? (
+                                    <FaTrashAlt className="w-5 h-5" />
+                                  ) : (
+                                    <FaMinus className="w-5 h-5" />
+                                  )}
+                                </button>
+                                <p className="md:hidden font-semibold md:text-lg text-center text-brand-gray self-center">
+                                  {customFixedRound(logMeal.quantity, true)}
+                                  {logMeal.quantity > 1
+                                    ? ' unidades'
+                                    : ' unidad'}
+                                </p>
+                                <button
+                                  onClick={() => {
+                                    handleUpdateProductOrMealQuantityFromEntry(
+                                      logMeal._id,
+                                      'meal',
+                                      logMeal.quantity + 1,
+                                    );
+                                  }}
+                                  className="btn btn-primary rounded-sm!"
+                                >
+                                  <FaPlus className="w-5 h-5" />
+                                </button>
+                              </div>
+                              <p className="max-md:hidden font-semibold md:text-lg text-center text-brand-gray">
+                                {customFixedRound(logMeal.quantity, true)}
+                                {logMeal.quantity > 1 ? ' unidades' : ' unidad'}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="border-light p-2">
+                            {macrosKeys.map((mk) => (
+                              <DividedTextLine
+                                key={mk}
+                                first={macrosIndexed[mk].label}
+                                second={
+                                  customFixedRound(
+                                    Number(
+                                      getTotalMacros('logMeal', [logMeal])[mk],
+                                    ),
+                                    true,
+                                  ) + macrosIndexed[mk].unit
+                                }
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -399,7 +443,7 @@ const LogList = () => {
             </div>
 
             {/* LOG PRODUCTS */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 p-2">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-md:gap-3 gap-4 p-2">
               {!!log?.logProducts.length &&
                 log?.logProducts
                   ?.sort((a, b) =>
@@ -408,15 +452,13 @@ const LogList = () => {
                   .map((product) => (
                     <div
                       key={product._id}
-                      className="flex flex-col gap-4 border-light p-4 relative bg-brand-whiter rounded-sm shadow-xl"
+                      className="flex flex-col max-md:gap-3 gap-4 border-light p-4 relative bg-brand-whiter rounded-sm shadow-xl"
                     >
-                      <div className="flex grow items-center">
-                        <p className="grow font-semibold text-center">
-                          {product.product.title}
-                        </p>
-                      </div>
+                      <p className="grow font-semibold max-md:text-sm max-md:leading-none! text-center custom-ellipsis">
+                        {product.product.title}
+                      </p>
                       <DividerLine />
-                      <div className="flex items-center gap-4 justify-between max-md:flex-col">
+                      <div className="flex items-center max-md:gap-3 gap-4 justify-between max-md:flex-col">
                         <div className="flex items-center gap-2 justify-between grow">
                           <Image
                             src={product.product.image || ''}
@@ -443,42 +485,8 @@ const LogList = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="flex justify-between items-center mb-2">
-                        <button
-                          onClick={() => {
-                            if (
-                              product.quantity ===
-                              product.product.presentationSize
-                            )
-                              handleDeleteProductOrMealFromEntry(
-                                product._id,
-                                'product',
-                              );
-                            else
-                              handleUpdateProductOrMealQuantityFromEntry(
-                                product._id,
-                                'product',
-                                product.quantity -
-                                  product.product.presentationSize,
-                              );
-                          }}
-                          className={clsx(
-                            'btn rounded-sm!',
-                            product.quantity ===
-                              product.product.presentationSize
-                              ? // ? 'btn-danger-plain'
-                                'btn-plain'
-                              : 'btn-plain',
-                          )}
-                        >
-                          {product.quantity ===
-                          product.product.presentationSize ? (
-                            <FaTrashAlt className="w-5 h-5" />
-                          ) : (
-                            <FaMinus className="w-5 h-5" />
-                          )}
-                        </button>
-                        <p className="font-semibold text-lg text-center text-brand-gray">
+                      <div className="flex flex-col gap-2">
+                        <p className="font-semibold md:text-lg text-center text-brand-gray md:hidden">
                           {customFixedRound(
                             product.quantity / product.product.presentationSize,
                             true,
@@ -488,26 +496,76 @@ const LogList = () => {
                             ? ' unidades'
                             : ' unidad'}
                         </p>
-                        <button
-                          onClick={() => {
-                            handleUpdateProductOrMealQuantityFromEntry(
-                              product._id,
-                              'product',
-                              product.quantity +
+                        <div className="flex justify-between items-center mb-2">
+                          <button
+                            onClick={() => {
+                              if (
+                                product.quantity ===
+                                product.product.presentationSize
+                              )
+                                handleDeleteProductOrMealFromEntry(
+                                  product._id,
+                                  'product',
+                                );
+                              else
+                                handleUpdateProductOrMealQuantityFromEntry(
+                                  product._id,
+                                  'product',
+                                  product.quantity -
+                                    product.product.presentationSize,
+                                );
+                            }}
+                            className={clsx(
+                              'btn rounded-sm!',
+                              product.quantity ===
+                                product.product.presentationSize
+                                ? // ? 'btn-danger-plain'
+                                  'btn-primary'
+                                : 'btn-primary',
+                            )}
+                          >
+                            {product.quantity ===
+                            product.product.presentationSize ? (
+                              <FaTrashAlt className="w-5 h-5" />
+                            ) : (
+                              <FaMinus className="w-5 h-5" />
+                            )}
+                          </button>
+                          <p className="font-semibold md:text-lg text-center text-brand-gray max-md:hidden">
+                            {customFixedRound(
+                              product.quantity /
                                 product.product.presentationSize,
-                            );
-                          }}
-                          className="btn btn-plain rounded-sm!"
-                        >
-                          <FaPlus className="w-5 h-5" />
-                        </button>
+                              true,
+                            )}
+                            {product.quantity /
+                              product.product.presentationSize >
+                            1
+                              ? ' unidades'
+                              : ' unidad'}
+                          </p>
+                          <button
+                            onClick={() => {
+                              handleUpdateProductOrMealQuantityFromEntry(
+                                product._id,
+                                'product',
+                                product.quantity +
+                                  product.product.presentationSize,
+                              );
+                            }}
+                            className="btn btn-primary rounded-sm!"
+                          >
+                            <FaPlus className="w-5 h-5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
             </div>
           </div>
-          <div className="bg-brand-whiter border-light shadow-xl p-4">
-            <p className="subtitle font-semibold!">Totales diarios</p>
+          <div className="bg-brand-whiter border-light shadow-xl p-4 max-md:max-w-[75%]">
+            <p className="font-semibold! text-brand-pink! text-center py-2">
+              Totales diarios
+            </p>
             {macrosKeys.map((mk) => (
               <DividedTextLine
                 key={mk}
@@ -549,7 +607,7 @@ const LogList = () => {
               <div className="flex items-center justify-center gap-4">
                 <button
                   className={clsx(
-                    'btn',
+                    'btn max-md:text-sm!',
                     selectedTab === 'meals' ? 'btn-primary' : 'btn-plain',
                   )}
                   onClick={() => setSelectedTab('meals')}
@@ -558,7 +616,7 @@ const LogList = () => {
                 </button>
                 <button
                   className={clsx(
-                    'btn',
+                    'btn max-md:text-sm!',
                     selectedTab === 'products' ? 'btn-primary' : 'btn-plain',
                   )}
                   onClick={() => setSelectedTab('products')}
@@ -566,15 +624,21 @@ const LogList = () => {
                   Productos
                 </button>
               </div>
-              <div className="flex flex-col w-full gap-4 h-[25vh] overflow-y-auto">
+              <div
+                className={clsx(
+                  'flex flex-col w-full gap-4 h-[35vh] overflow-y-auto border-light p-2',
+                  selectedTab === 'products' &&
+                    'md:grid md:grid-cols-2 md:gap-x-2 md:gap-y-3',
+                )}
+              >
                 {selectedTab === 'meals'
                   ? selectedMeals.map((meal) => (
                       <div
                         key={meal._id}
                         className={clsx(
-                          'flex border rounded-sm items-center gap-2 p-2 justify-between cursor-pointer',
+                          'flex border rounded-sm items-center gap-2 p-2 justify-between cursor-pointer shadow max-h-20 mr-1',
                           meal.quantity > 0
-                            ? 'border-brand-black bg-brand-whiter'
+                            ? 'border-brand-pink bg-brand-whiter shadow-lg'
                             : 'border-light',
                         )}
                         onClick={() => {
@@ -612,9 +676,9 @@ const LogList = () => {
                       <div
                         key={product._id}
                         className={clsx(
-                          'flex border rounded-sm items-center gap-2 p-2 cursor-pointer bg-brand-whiter mr-1',
+                          'flex border rounded-sm items-center gap-2 p-2 cursor-pointer mr-1',
                           product.quantity > 0
-                            ? 'border-brand-pink bg-brand-whiter'
+                            ? 'border-brand-pink bg-brand-whiter shadow-lg'
                             : 'border-light',
                         )}
                         onClick={() => {
@@ -631,9 +695,11 @@ const LogList = () => {
                           width={200}
                           height={200}
                           alt={product.title}
-                          className="w-20 h-20 border-light rounded-sm"
+                          className="w-14 md:w-20 h-14 md:h-20 border-light rounded-sm"
                         />
-                        <p className="grow text-center">{product.title}</p>
+                        <p className="grow text-center max-md:text-sm">
+                          {product.title}
+                        </p>
                         <div className="flex items-center gap-2">
                           <button
                             className="btn btn-plain p-1! text-sm! rounded-xs"
@@ -669,42 +735,48 @@ const LogList = () => {
                       </div>
                     ))}
               </div>
-              <div className="h-[25vh] overflow-y-auto border-light p-2 flex flex-col gap-2">
-                <p className="font-semibold text-brand-black! text-center">
+              <div className="h-[25vh] border-light p-2 flex flex-col gap-2 md:gap-4">
+                <p className="font-semibold md:text-lg text-center py-2">
                   Fecha: {date}
                 </p>
-                <div className="flex flex-col gap-2 grow">
-                  {!!selectedProducts.filter((sp) => sp.quantity > 0)
-                    .length && (
-                      <p className="font-semibold text-brand-black! text-center">
-                        Productos:
-                      </p>
-                    ) &&
-                    selectedProducts
-                      .filter((sp) => sp.quantity > 0)
-                      .map((sp) => (
-                        <div key={sp._id}>
-                          <DividedTextLine
-                            first={sp.title}
-                            second={'x' + sp.quantity / sp.presentationSize}
-                          />
-                        </div>
-                      ))}
-                  {!!selectedMeals.filter((sm) => sm.quantity > 0) && (
-                      <p className="font-semibold text-brand-black! text-center">
-                        Comidas:
-                      </p>
-                    ) &&
-                    selectedMeals
-                      .filter((sm) => sm.quantity > 0)
-                      .map((sm) => (
-                        <div key={sm._id}>
-                          <DividedTextLine
-                            first={sm.title}
-                            second={'x' + sm.quantity}
-                          />
-                        </div>
-                      ))}
+                <div className="flex flex-col gap-2 grow overflow-y-auto">
+                  {(!!selectedProducts.filter((sp) => sp.quantity > 0).length ||
+                    !!selectedMeals.filter((sm) => sm.quantity > 0).length) && (
+                    <div className="flex flex-col gap-2 md:grid md:grid-cols-2">
+                      {!!selectedProducts.filter((sp) => sp.quantity > 0)
+                        .length && (
+                          <p className="font-semibold text-brand-black! text-center">
+                            Productos:
+                          </p>
+                        ) &&
+                        selectedProducts
+                          .filter((sp) => sp.quantity > 0)
+                          .map((sp) => (
+                            <div key={sp._id} className="p-2">
+                              <DividedTextLine
+                                first={sp.title}
+                                second={'x' + sp.quantity / sp.presentationSize}
+                              />
+                            </div>
+                          ))}
+                      {!!selectedMeals.filter((sm) => sm.quantity > 0)
+                        .length && (
+                          <p className="font-semibold text-brand-black! text-center">
+                            Comidas:
+                          </p>
+                        ) &&
+                        selectedMeals
+                          .filter((sm) => sm.quantity > 0)
+                          .map((sm) => (
+                            <div key={sm._id} className="p-2">
+                              <DividedTextLine
+                                first={sm.title}
+                                second={'x' + sm.quantity}
+                              />
+                            </div>
+                          ))}
+                    </div>
+                  )}
                   {!selectedMeals.filter((sm) => sm.quantity > 0).length &&
                     !selectedProducts.filter((sp) => sp.quantity > 0)
                       .length && (
@@ -716,7 +788,7 @@ const LogList = () => {
               </div>
               <div className="flex items-center gap-4 self-center">
                 <button className="btn btn-plain" onClick={handleCloseModal}>
-                  Cancelar
+                  <p className="max-md:text-sm">Cancelar</p>
                 </button>
                 <button
                   className="btn-primary btn"
@@ -730,7 +802,7 @@ const LogList = () => {
                     !date
                   }
                 >
-                  Añadir al registro
+                  <p className="max-md:text-sm">Añadir al registro</p>
                 </button>
               </div>
             </div>
