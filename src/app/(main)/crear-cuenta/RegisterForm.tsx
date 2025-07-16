@@ -122,7 +122,9 @@ const RegisterForm = () => {
       ) {
         toast.error('El correo electrónico ya está en uso');
       } else {
-        toast.error('Ha ocurrido un error al crear la cuenta');
+        toast.error('Ha ocurrido un error al crear la cuenta', {
+          autoClose: false,
+        });
       }
     } finally {
       setIsLoading(false);

@@ -19,7 +19,7 @@ const RootWrapper = ({
         <LoadingSpinner />
         <ToastContainer
           closeOnClick={true}
-          autoClose={false}
+          autoClose={3000}
           pauseOnFocusLoss={true}
           newestOnTop={true}
           pauseOnHover={true}

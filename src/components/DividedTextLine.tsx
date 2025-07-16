@@ -5,10 +5,14 @@ const DividedTextLine = ({
   first,
   second,
   className,
+  classNameFirst,
+  classNameSecond,
 }: {
   first: string | number;
   second: string | number;
   className?: string;
+  classNameFirst?: string;
+  classNameSecond?: string;
 }) => {
   return (
     <div
@@ -17,9 +21,9 @@ const DividedTextLine = ({
         className,
       )}
     >
-      <span>{String(first)}</span>
+      <span className={classNameFirst}>{String(first)}</span>
       <div className="bg-brand-grayer/20 h-px grow relative bottom-1 self-end" />
-      <span>{String(second)}</span>
+      <span className={classNameSecond}>{String(second)}</span>
     </div>
   );
 };

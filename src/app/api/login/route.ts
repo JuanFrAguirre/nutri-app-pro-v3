@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     const cookieStore = await cookies();
     cookieStore.set('Authorization', `Bearer ${token}`, {
-      httpOnly: process.env.NODE_ENV === 'production',
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1 * 60 * 60,
       path: '/',

@@ -66,7 +66,7 @@ body > .modal-open {
 }
 
 .title {
-  @apply text-4xl lg:text-5xl font-thin text-center text-black;
+  @apply text-3xl  md:text-4xl lg:text-5xl font-thin text-center text-black;
 }
 
 .subtitle {
@@ -99,16 +99,22 @@ button {
   @apply rounded-xs outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl duration-300;
 }
 .btn {
-  @apply origin-bottom text-center max-md:text-lg text-xl border rounded-xs p-2 max-md:px-4 px-6 font-semibold transition-all cursor-pointer active:scale-[0.99] duration-500;
+  @apply origin-bottom text-center max-md:text-lg text-xl border rounded-xs p-2 max-md:px-4 px-6 font-semibold transition-all cursor-pointer active:scale-[0.99] duration-500 disabled:cursor-not-allowed;
 }
 .btn-primary {
-  @apply bg-brand-black border-brand-black text-white hover:bg-brand-blacker hover:border-brand-blacker;
+  @apply bg-brand-black border-brand-black text-brand-whiter hover:bg-brand-blacker hover:border-brand-blacker;
 }
 .btn-secondary {
-  @apply border-brand-gray bg-brand-gray text-brand-white hover:bg-brand-grayer;
+  @apply border-brand-gray bg-brand-gray text-brand-whiter hover:bg-brand-grayer;
 }
 .btn-plain {
-  @apply bg-brand-white border font-semibold hover:bg-brand-whiter shadow-md disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl;
+  @apply bg-brand-whiter text-brand-black border font-semibold hover:bg-white hover:text-brand-blacker shadow-md disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl;
+}
+.btn-danger {
+  @apply bg-red-700 border-red-700 text-brand-whiter hover:bg-red-600 hover:border-red-600;
+}
+.btn-danger-plain {
+  @apply bg-brand-whiter border-red-600 text-red-600 hover:border-red-700 hover:text-red-700;
 }
 .toast-item {
   @apply rounded-sm max-md:shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)] border shadow-xl! border-brand-grayer/50;

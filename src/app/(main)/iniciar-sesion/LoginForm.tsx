@@ -70,7 +70,9 @@ const LoginForm = () => {
         console.error(error.response?.data.message);
         toast.error(error.response?.data.message);
       } else {
-        toast.error('Ha ocurrido un error al iniciar sesión');
+        toast.error('Ha ocurrido un error al iniciar sesión', {
+          autoClose: false,
+        });
       }
     } finally {
       setIsLoading(false);

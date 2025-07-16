@@ -10,7 +10,6 @@ import {
 export const getLog = async (date?: string): Promise<Log | null> => {
   const { headers } = await checkAuthServer();
   const dateToSend = date || new Date().toISOString().split('T')[0];
-  console.log(process.env.BACKEND_URL + '/logs?date=' + dateToSend);
   try {
     const response = await axios.get(
       process.env.BACKEND_URL + '/logs?date=' + dateToSend,
@@ -18,7 +17,6 @@ export const getLog = async (date?: string): Promise<Log | null> => {
         headers,
       },
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
