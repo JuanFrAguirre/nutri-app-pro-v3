@@ -35,9 +35,9 @@ const DashboardPage = () => {
 
   return (
     <div className="grow flex flex-col gap-5">
-      <Link href={'/logout'} className="fixed top-28 right-6 btn btn-plain">
+      {/* <Link href={'/logout'} className="fixed top-28 right-6 btn btn-plain">
         Cerrar sesión
-      </Link>
+      </Link> */}
       <p className="subtitle">
         Bienvenido de nuevo, {user?.firstName} {user?.lastName}!
       </p>
