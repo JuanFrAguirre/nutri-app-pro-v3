@@ -2,6 +2,7 @@
 import { useProductStore } from '@/store/productStore';
 import { ProductWithQuantity } from '@/types/types';
 import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -85,8 +86,15 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
               window.location.href = '/registros?date=' + today;
             else router.push('/registros?date=' + today);
           }}
-          className="text-2xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100"
+          className="text-2xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 flex gap-2 items-center"
         >
+          <Image
+            src="/centered-logo.png"
+            alt="NutriAppPro"
+            width={100}
+            height={100}
+            className="w-10 h-10"
+          />
           <h1>NutriAppPro</h1>
         </button>
 
@@ -202,8 +210,15 @@ const TabletAndUpwardsNav = ({ links, pathname }: NavProps) => {
               window.location.href = '/registros?date=' + today;
             else router.push('/registros?date=' + today);
           }}
-          className="text-2xl lg:text-3xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 py-[14px]"
+          className="text-2xl lg:text-3xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 py-[14px] flex gap-2"
         >
+          <Image
+            src="/centered-logo.png"
+            alt="NutriAppPro"
+            width={100}
+            height={100}
+            className="w-10 h-10"
+          />
           <h1>NutriAppPro</h1>
         </button>
 

@@ -28,7 +28,7 @@ const RootWrapper = ({
           toastClassName="toast-item"
         />
 
-        <main className="px-5 py-10 md:py-20 md:pb-30 grow container mx-auto flex max-lg:flex-col">
+        <main className="px-5 max-md:py-5 max-md:pb-10 py-10 md:py-20 md:pb-30 grow container mx-auto flex max-lg:flex-col">
           {children}
           {/* <div
             className={clsx(

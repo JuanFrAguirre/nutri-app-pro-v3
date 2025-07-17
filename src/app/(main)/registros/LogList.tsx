@@ -327,12 +327,16 @@ const LogList = () => {
                         </p>
                       </div>
                       <DividerLine />
-                      <div className="flex items-center max-md:gap-3 gap-4 justify-between max-md:flex-col">
-                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 max-md:gap-3 gap-4 grow overflow-y-auto max-h-[450px]">
+                      <div className="items-center max-md:gap-3 gap-4 justify-between max-md:flex-col">
+                        <div
+                          className={clsx(
+                            'grid  grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 max-md:gap-3 gap-4 md:grow max-md:overflow-x-auto md:overflow-y-auto max-h-[450px]',
+                          )}
+                        >
                           {logMeal.meal.mealProducts.map((mealProduct) => (
                             <div
                               key={mealProduct.product._id}
-                              className="flex items-center max-md:gap-3 gap-4 flex-col border-light rounded-sm p-4 shadow-md"
+                              className="max-md:basis-[45%] flex items-center max-md:gap-3 gap-4 flex-col border-light rounded-sm p-4 shadow-md"
                             >
                               <div className="grow flex items-center justify-center">
                                 <p className="custom-ellipsis text-center text-sm ">
