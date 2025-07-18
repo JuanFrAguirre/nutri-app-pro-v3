@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { BsCalendar2DayFill } from 'react-icons/bs';
 import { FaCalculator, FaUser } from 'react-icons/fa';
 import { FaCartShopping } from 'react-icons/fa6';
@@ -81,18 +81,13 @@ const Header = () => {
 };
 
 const MobileNav = ({ links, pathname, products }: NavProps) => {
-  // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-  // const handleNavigate = () => {
-  //   setIsMenuOpen(false);
-  // };
 
   return (
     <header
       className={clsx(
         'fixed top-0 md:hidden inset-x-0 bg-brand-whiter h-12 md:h-16 flex items-center pt-safe z-[20]',
         'shadow-xl',
-        // 'shadow-[0_20px_25px_-5px_rgb(0,0,0,0.1),0_8px_10px_-6px_rgb(0,0,0,0.1)]',
       )}
     >
       <div
