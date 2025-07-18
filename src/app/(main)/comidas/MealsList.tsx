@@ -1,29 +1,24 @@
 'use client';
 import DividerLine from '@/components/DividerLine';
 import { useLoadingContext } from '@/contexts/LoadingContext';
-import useAuth from '@/hooks/useAuth';
+import { useAxios } from '@/lib/axios';
 import { MealWithQuantity } from '@/types/types';
-import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoRestaurant } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
 const MealsList = () => {
   const [meals, setMeals] = useState<MealWithQuantity[]>([]);
-  const { getHeaders } = useAuth();
   const { isLoading, setIsLoading } = useLoadingContext();
+  const api = useAxios();
 
   useEffect(() => {
     const fetchMeals = async () => {
       try {
         setIsLoading(true);
-        const headers = await getHeaders();
-        const response = await axios.get(
-          process.env.NEXT_PUBLIC_BACKEND_URL + '/meals',
-          { headers },
-        );
+        const response = await api.get('/meals');
         setMeals(response.data);
       } catch (error) {
         console.error(error);
@@ -33,7 +28,7 @@ const MealsList = () => {
       }
     };
     fetchMeals();
-  }, [getHeaders, setIsLoading]);
+  }, [setIsLoading, api]);
 
   if (isLoading) return '';
 

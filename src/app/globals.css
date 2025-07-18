@@ -78,7 +78,7 @@ body {
 }
 
 .input-search {
-  @apply rounded py-1 px-10 w-full focus-visible:ring-2 focus-visible:ring-brand-pink outline-none bg-brand-whiter;
+  @apply border border-brand-grayer/20 rounded-xl py-1 px-10 w-full focus-visible:ring-2 focus-visible:ring-brand-pink outline-none bg-brand-whiter;
 }
 
 .input.error {

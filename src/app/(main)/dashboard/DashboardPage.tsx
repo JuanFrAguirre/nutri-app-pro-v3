@@ -1,5 +1,6 @@
 'use client';
 import DividedTextLine from '@/components/DividedTextLine';
+import { useLoadingContext } from '@/contexts/LoadingContext';
 import { useGetUser } from '@/hooks/useAuth';
 import { useLogs } from '@/hooks/useLogs';
 import {
@@ -12,7 +13,7 @@ import {
 import { Log } from '@/types/types';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaChevronRight } from 'react-icons/fa';
 
 const DashboardPage = () => {
@@ -21,6 +22,7 @@ const DashboardPage = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<
     'week' | 'fortnight' | 'month'
   >('week');
+  const { isLoading, setIsLoading } = useLoadingContext();
 
   const handleTimeRangeChange = (timeRange: 'week' | 'fortnight' | 'month') => {
     setSelectedTimeRange(timeRange);
@@ -33,53 +35,57 @@ const DashboardPage = () => {
     }
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    if (user) {
+      setIsLoading(false);
+    }
+  }, [user, setIsLoading]);
+
+  if (isLoading || !user) return '';
+
   return (
-    <div className="grow flex flex-col gap-5">
-      <Link
-        href={'/logout'}
-        prefetch={false}
-        className="fixed top-28 right-6 btn btn-plain"
-      >
-        Cerrar sesión
-      </Link>
-      <p className="subtitle">
-        Bienvenido de nuevo, {user?.firstName} {user?.lastName}!
-      </p>
-      <div className="flex justify-center gap-2">
-        <button
-          onClick={() => handleTimeRangeChange('week')}
-          className={clsx(
-            'btn',
-            selectedTimeRange === 'week' ? 'btn-primary' : 'btn-plain',
-          )}
-        >
-          <p>Últimos 7 días</p>
-        </button>
-        <button
-          onClick={() => handleTimeRangeChange('fortnight')}
-          className={clsx(
-            'btn',
-            selectedTimeRange === 'fortnight' ? 'btn-primary' : 'btn-plain',
-          )}
-        >
-          <p>Últimos 15 días</p>
-        </button>
-        <button
-          onClick={() => handleTimeRangeChange('month')}
-          className={clsx(
-            'btn',
-            selectedTimeRange === 'month' ? 'btn-primary' : 'btn-plain',
-          )}
-        >
-          <p>Último mes</p>
-        </button>
+    user && (
+      <div className="grow flex flex-col gap-5">
+        <p className="subtitle">
+          Bienvenido de nuevo, {user?.firstName} {user?.lastName}!
+        </p>
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={() => handleTimeRangeChange('week')}
+            className={clsx(
+              'btn',
+              selectedTimeRange === 'week' ? 'btn-primary' : 'btn-plain',
+            )}
+          >
+            <p>Últimos 7 días</p>
+          </button>
+          <button
+            onClick={() => handleTimeRangeChange('fortnight')}
+            className={clsx(
+              'btn',
+              selectedTimeRange === 'fortnight' ? 'btn-primary' : 'btn-plain',
+            )}
+          >
+            <p>Últimos 15 días</p>
+          </button>
+          <button
+            onClick={() => handleTimeRangeChange('month')}
+            className={clsx(
+              'btn',
+              selectedTimeRange === 'month' ? 'btn-primary' : 'btn-plain',
+            )}
+          >
+            <p>Último mes</p>
+          </button>
+        </div>
+        <div className="gap-4 grid grid-cols-2">
+          {logs.map((log) => (
+            <LogCard key={log._id} log={log} />
+          ))}
+        </div>
       </div>
-      <div className="gap-4 grid grid-cols-2">
-        {logs.map((log) => (
-          <LogCard key={log._id} log={log} />
-        ))}
-      </div>
-    </div>
+    )
   );
 };
 

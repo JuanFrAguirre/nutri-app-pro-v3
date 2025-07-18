@@ -11,6 +11,13 @@ import { FaCalculator, FaUser } from 'react-icons/fa';
 import { FaCartShopping } from 'react-icons/fa6';
 import { IoMdCalculator } from 'react-icons/io';
 import { IoRestaurant } from 'react-icons/io5';
+import { MdLogout } from 'react-icons/md';
+
+type NavProps = {
+  links: typeof AUTH_LINKS;
+  pathname: string;
+  products: ProductWithQuantity[];
+};
 
 const AUTH_LINKS = [
   {
@@ -73,32 +80,25 @@ const Header = () => {
   );
 };
 
-type NavProps = {
-  links: typeof AUTH_LINKS;
-  pathname: string;
-  products: ProductWithQuantity[];
-};
-
 const MobileNav = ({ links, pathname, products }: NavProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-  const handleNavigate = () => {
-    setIsMenuOpen(false);
-  };
+  // const handleNavigate = () => {
+  //   setIsMenuOpen(false);
+  // };
 
   return (
     <header
       className={clsx(
         'fixed top-0 md:hidden inset-x-0 bg-brand-whiter h-12 md:h-16 flex items-center pt-safe z-[20]',
-        pathname === '/productos' ||
-          pathname === '/comidas' ||
-          pathname.includes('/registros')
-          ? ''
-          : 'shadow-xl',
+        'shadow-xl',
+        // 'shadow-[0_20px_25px_-5px_rgb(0,0,0,0.1),0_8px_10px_-6px_rgb(0,0,0,0.1)]',
       )}
     >
       <div
-        className={clsx('container mx-auto flex items-center justify-center')}
+        className={clsx(
+          'container mx-auto flex items-center justify-between relative',
+        )}
       >
         <button
           onClick={() => {
@@ -108,7 +108,7 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
               window.location.href = '/registros?date=' + today;
             else router.push('/registros?date=' + today);
           }}
-          className="text-2xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 flex gap-2 items-center"
+          className="text-2xl font-thin tracking-wide link rounded-none! px-5 transition-all duration-500 hover:text-brand-pink text-shadow-md hover:text-shadow-pink-100 flex gap-2 items-center max-w-[50%]"
         >
           <Image
             src="/centered-logo.png"
@@ -119,21 +119,22 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
           />
           <h1>NutriAppPro</h1>
         </button>
+        {pathname === '/dashboard' && (
+          <Link
+            href={'/logout'}
+            prefetch={false}
+            className="flex gap-2 items-center text-brand-gray border border-brand-grayer/20 rounded-xl p-1 px-2 mr-4"
+          >
+            Cerrar sesión <MdLogout size={24} />
+          </Link>
+        )}
 
         {/* FIXED BUTTONS */}
         {!!links.length && (
-          <nav className="relative">
+          <>
             {/* BOTTOM NAV */}
-            <div className="fixed bottom-0 inset-x-0 bg-brand-whiter flex justify-between border-t-[1px] border-brand-black/20">
+            <div className="fixed bottom-0 inset-x-0 bg-brand-whiter flex justify-between shadow-[0_-20px_25px_-5px_rgb(0,0,0,0.1),0_-8px_10px_-6px_rgb(0,0,0,0.1)]">
               {/* MENU BUTTON */}
-              {/* <button
-                className="bg-blue-500"
-                onClick={() => setIsMenuOpen((prev) => !prev)}
-              >
-                <IoMdMenu
-                  className={clsx('w-10 h-10 transition-all duration-500')}
-                />
-              </button> */}
               {links
                 .sort((a, b) => a.mobileIndex - b.mobileIndex)
                 .map((link) => (
@@ -141,9 +142,10 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
                     key={link.label}
                     href={link.href}
                     className={clsx(
-                      'text-brand-black flex items-center gap-2 p-3 grow justify-center',
-                      pathname.includes(link.href.split('?')[0]) &&
-                        'bg-brand-black text-brand-white',
+                      'text-brand-black flex items-center gap-2 p-3 grow justify-center border-t-[1px] border-t-brand-grayer/20',
+                      pathname.includes(link.href.split('?')[0])
+                        ? 'bg-brand-black text-brand-white border-t-brand-black'
+                        : 'border-t-brand-grayer',
                     )}
                   >
                     {link.icon}
@@ -172,7 +174,7 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
               )}
 
             {/* OPENABLE MENU */}
-            <div
+            {/* <div
               onClick={() => setIsMenuOpen(false)}
               className={clsx(
                 'bg-black/5 backdrop-blur-[2px] fixed inset-0',
@@ -223,8 +225,8 @@ const MobileNav = ({ links, pathname, products }: NavProps) => {
                   </Link>
                 );
               })}
-            </div>
-          </nav>
+            </div> */}
+          </>
         )}
       </div>
     </header>

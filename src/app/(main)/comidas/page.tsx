@@ -5,7 +5,6 @@ const FoodsPage = () => {
   return (
     <>
       <PageWrapper>
-        <p className="title">Comidas</p>
         <MealsList />
       </PageWrapper>
     </>

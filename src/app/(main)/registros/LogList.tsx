@@ -4,6 +4,9 @@ import DividedTextLine from '@/components/DividedTextLine';
 import DividerLine from '@/components/DividerLine';
 import Modal from '@/components/Modal';
 import { useLoadingContext } from '@/contexts/LoadingContext';
+import { useModal } from '@/hooks/useModal';
+import { useAxios } from '@/lib/axios';
+import { getUserData } from '@/lib/userData';
 import {
   customFixedRound,
   getTotalMacros,
@@ -17,7 +20,7 @@ import {
   Product,
   ProductWithQuantity,
 } from '@/types/types';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -30,10 +33,8 @@ import {
   FaPlus,
   FaTrashAlt,
 } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-import { useModal } from '../../../hooks/useModal';
-import useAuth from '@/hooks/useAuth';
 import { LuCalendarPlus } from 'react-icons/lu';
+import { toast } from 'react-toastify';
 
 const LogList = () => {
   const searchParams = useSearchParams();
@@ -47,7 +48,7 @@ const LogList = () => {
 
   const [products, setProducts] = useState<ProductWithQuantity[]>([]);
   const [meals, setMeals] = useState<MealWithQuantity[]>([]);
-  const { getHeaders, getUser } = useAuth();
+  const api = useAxios();
 
   const [date, setDate] = useState<string>(logDate);
   const [log, setLog] = useState<Log | null>(null);
@@ -79,13 +80,9 @@ const LogList = () => {
   const handleFetchLog = useCallback(
     async (date: string) => {
       try {
-        const headers = await getHeaders();
         setIsLoading(true);
         setLog(null);
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs?date=${date}`,
-          { headers },
-        );
+        const response = await api.get(`/logs?date=${date}`);
         console.log(response.data);
         setLog(response.data);
       } catch (error) {
@@ -100,7 +97,7 @@ const LogList = () => {
         setIsLoading(false);
       }
     },
-    [setIsLoading, getHeaders],
+    [setIsLoading, api],
   );
 
   const handleProductQuantity = (productId: string, quantity: number) => {
@@ -118,8 +115,7 @@ const LogList = () => {
 
   const handleCreateLog = async () => {
     try {
-      const headers = await getHeaders();
-      const user = await getUser();
+      const user = await getUserData();
       setIsLoading(true);
       const mealsToCreate = selectedMeals
         .filter((meal) => meal.quantity > 0)
@@ -133,16 +129,12 @@ const LogList = () => {
           product: product._id,
           quantity: product.quantity,
         }));
-      await axios.post(
-        process.env.NEXT_PUBLIC_BACKEND_URL + '/logs',
-        {
-          date,
-          user: user.id,
-          logMeals: mealsToCreate,
-          logProducts: productsToCreate,
-        },
-        { headers },
-      );
+      await api.post('/logs', {
+        date,
+        user: user.id,
+        logMeals: mealsToCreate,
+        logProducts: productsToCreate,
+      });
       handleCloseModal();
       toast.success('Registro creado correctamente');
     } catch (error) {
@@ -179,14 +171,9 @@ const LogList = () => {
 
   const handleFetchProductsAndMeals = useCallback(async () => {
     try {
-      const headers = await getHeaders();
       const [productsResponse, mealsResponse] = await Promise.all([
-        axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + '/products', {
-          headers,
-        }),
-        axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + '/meals', {
-          headers,
-        }),
+        api.get('/products'),
+        api.get('/meals'),
       ]);
       const productsData = productsResponse.data.map((product: Product) => ({
         ...product,
@@ -204,21 +191,14 @@ const LogList = () => {
       toast.error('Error al cargar los productos y comidas');
       console.error(error);
     }
-  }, [getHeaders]);
+  }, [api]);
 
   const handleDeleteProductOrMealFromEntry = useCallback(
     async (id: string, type: 'product' | 'meal') => {
       try {
         if (confirm('¿Estás seguro de querer eliminar esta entrada?')) {
-          const headers = await getHeaders();
           setIsLoading(true);
-          await axios.delete(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}`,
-            {
-              headers,
-              data: { type },
-            },
-          );
+          await api.delete(`/logs/${id}`, { data: { type } });
           handleFetchLog(date);
           toast.success('Entrada eliminada correctamente');
         } else return;
@@ -229,24 +209,14 @@ const LogList = () => {
         setIsLoading(false);
       }
     },
-    [date, getHeaders, handleFetchLog, setIsLoading],
+    [date, handleFetchLog, setIsLoading, api],
   );
 
   const handleUpdateProductOrMealQuantityFromEntry = useCallback(
     async (id: string, type: 'product' | 'meal', quantity: number) => {
       try {
-        const headers = await getHeaders();
         setIsLoading(true);
-        console.log(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}/quantity`,
-          { type, quantity },
-          { headers },
-        );
-        await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${id}/quantity`,
-          { type, quantity },
-          { headers },
-        );
+        await api.put(`/logs/${id}/quantity`, { type, quantity });
         handleFetchLog(date);
         toast.success('Cantidad actualizada correctamente');
       } catch (error) {
@@ -256,7 +226,7 @@ const LogList = () => {
         setIsLoading(false);
       }
     },
-    [date, getHeaders, handleFetchLog, setIsLoading],
+    [date, handleFetchLog, setIsLoading, api],
   );
 
   useEffect(() => {

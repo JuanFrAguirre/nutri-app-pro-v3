@@ -1,16 +1,15 @@
 'use client';
 import ProductItem from '@/components/ProductItem';
 import { useLoadingContext } from '@/contexts/LoadingContext';
-import useAuth from '@/hooks/useAuth';
+import { useModal } from '@/hooks/useModal';
+import { useAxios } from '@/lib/axios';
 import { useProductStore } from '@/store/productStore';
 import { ProductWithQuantity } from '@/types/types';
-import axios from 'axios';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ProductsNavBar from './ProductsNavBar';
 import EditProductModal from './EditProductModal';
-import { useModal } from '@/hooks/useModal';
+import ProductsNavBar from './ProductsNavBar';
 
 const ProductsList = () => {
   const {
@@ -25,7 +24,7 @@ const ProductsList = () => {
   const [filteredProducts, setFilteredProducts] = useState<
     ProductWithQuantity[]
   >([]);
-  const { getHeaders } = useAuth();
+  const api = useAxios();
   const {
     isOpen: isEditProductModalOpen,
     setIsOpen: setIsEditProductModalOpen,
@@ -66,10 +65,8 @@ const ProductsList = () => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const headers = await getHeaders();
-        const response: { data: ProductWithQuantity[] } = await axios.get(
-          process.env.NEXT_PUBLIC_BACKEND_URL + '/products',
-          { headers },
+        const response: { data: ProductWithQuantity[] } = await api.get(
+          '/products',
         );
         setProducts(response.data);
         setFilteredProducts(response.data);
@@ -81,7 +78,7 @@ const ProductsList = () => {
       }
     };
     fetchProducts();
-  }, [setIsLoading, getHeaders]);
+  }, [setIsLoading, api]);
 
   if (isLoading) return '';
 
@@ -93,7 +90,7 @@ const ProductsList = () => {
       {/* PRODUCTS LIST */}
       <div
         className={clsx(
-          'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4',
+          'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4',
         )}
       >
         {filteredProducts.map((product) => {

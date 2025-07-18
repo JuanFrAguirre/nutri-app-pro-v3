@@ -218,11 +218,19 @@ const EditProductModal = ({
             <small className="text-error">{errors.tags.message}</small>
           )}
         </div>
-        <div className="flex justify-end gap-3 mt-6">
-          <button type="button" className="btn btn-plain" onClick={onClose}>
+        <div className="flex justify-center gap-3 mt-6">
+          <button
+            type="button"
+            className="btn btn-plain grow"
+            onClick={onClose}
+          >
             Cancelar
           </button>
-          <button type="submit" className="btn btn-primary" disabled={!isValid}>
+          <button
+            type="submit"
+            className="btn btn-primary grow"
+            disabled={!isValid}
+          >
             Confirmar
           </button>
         </div>

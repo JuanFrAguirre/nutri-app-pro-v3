@@ -2,13 +2,12 @@
 import DividedTextLine from '@/components/DividedTextLine';
 import Modal from '@/components/Modal';
 import { useLoadingContext } from '@/contexts/LoadingContext';
-import useAuth from '@/hooks/useAuth';
 import { useModal } from '@/hooks/useModal';
+import { useAxios } from '@/lib/axios';
 import { getUserData } from '@/lib/userData';
 import { macrosIndexed, macrosKeys } from '@/lib/utils';
 import { useProductStore } from '@/store/productStore';
 import { ProductWithQuantity } from '@/types/types';
-import axios from 'axios';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,7 +26,7 @@ const ProductsCalculatorList = () => {
 
   const [products, setProducts] = useState<ProductWithQuantity[]>(cartProducts);
   const [mealName, setMealName] = useState('');
-  const { getHeaders } = useAuth();
+  const api = useAxios();
 
   const { isOpen, setIsOpen } = useModal();
 
@@ -44,19 +43,14 @@ const ProductsCalculatorList = () => {
   const handleCreateMeal = async () => {
     setIsLoading(true);
     try {
-      const headers = await getHeaders();
-      await axios.post(
-        process.env.NEXT_PUBLIC_BACKEND_URL + '/meals',
-        {
-          title: mealName,
-          user: getUserData().id,
-          mealProducts: products.map((prod) => ({
-            product: prod._id,
-            quantity: prod.quantity,
-          })),
-        },
-        { headers },
-      );
+      await api.post('/meals', {
+        title: mealName,
+        user: getUserData().id,
+        mealProducts: products.map((prod) => ({
+          product: prod._id,
+          quantity: prod.quantity,
+        })),
+      });
       clearProductsStore();
       toast.success('Comida creada correctamente');
       window.location.href = '/comidas';
@@ -151,7 +145,7 @@ const ProductsCalculatorList = () => {
         </div>
       </Modal>
       {!!products.length ? (
-        <div className="flex flex-col gap-4 grow">
+        <div className="flex flex-col gap-4 grow mb-10">
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 max-md:max-h-[50vh] max-h-[55vh] overflow-y-auto pb-10">
             {!!products.length &&
               products.map((product: ProductWithQuantity) => (
@@ -333,7 +327,7 @@ const ProductsCalculatorList = () => {
                 </div>
               ))}
           </div>
-          <div className="grow"></div>
+          {/* <div className="grow"></div> */}
           <Summary
             openModal={() => setIsOpen(true)}
             clearProductsStore={clearProductsStore}
@@ -342,9 +336,9 @@ const ProductsCalculatorList = () => {
           />
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-10">
-          <p className="text-center text-sm md:text-base">
-            Aún no tenés productos para calcular, agregá alguno para comenzar
+        <div className="flex flex-col items-center gap-10 grow justify-center">
+          <p className="text-center subtitle">
+            Aún no tenés productos para calcular, agregá alguno para comenzar.
           </p>
           <Link href="/productos" className="btn btn-plain">
             Ir a productos

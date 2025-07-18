@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic';
 const LogsPage = async () => {
   return (
     <PageWrapper>
-      <p className="title">Registros</p>
       <LogList />
     </PageWrapper>
   );
