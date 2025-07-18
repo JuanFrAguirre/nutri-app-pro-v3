@@ -86,6 +86,7 @@ const LogList = () => {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs?date=${date}`,
           { headers },
         );
+        console.log(response.data);
         setLog(response.data);
       } catch (error) {
         if (error instanceof AxiosError && error.response?.status === 404) {

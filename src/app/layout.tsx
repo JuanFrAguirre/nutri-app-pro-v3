@@ -1,6 +1,6 @@
 import RootWrapper from '@/components/RootWrapper';
 import type { Metadata } from 'next';
-import { Open_Sans } from 'next/font/google';
+import { Open_Sans, Roboto } from 'next/font/google';
 import './globals.css';
 
 import type { Viewport } from 'next';
@@ -16,6 +16,12 @@ const openSans = Open_Sans({
   subsets: ['latin'],
   variable: '--font-open-sans',
   weight: ['300', '400', '500', '600', '700', '800'],
+});
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -49,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.variable}`}>
+      <body className={`${roboto.variable} ${openSans.variable}`}>
         <RootWrapper className="min-h-screen antialiased flex flex-col items-center">
           {children}
         </RootWrapper>

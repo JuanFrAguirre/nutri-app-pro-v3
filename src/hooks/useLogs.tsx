@@ -1,9 +1,10 @@
-import { Log } from '@/types/types';
-import { useCallback, useEffect, useState } from 'react';
-import useAuth from './useAuth';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+'use client';
 import { useLoadingContext } from '@/contexts/LoadingContext';
+import { Log } from '@/types/types';
+import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import useAuth from './useAuth';
 
 const START_DATE = new Date();
 const END_DATE = new Date();
@@ -17,21 +18,24 @@ export const useLogs = () => {
   const [endDate, setEndDate] = useState(END_DATE);
 
   const getLogs = useCallback(
-    async (startDate: string, endDate: string) => {
+    async (startDate: Date, endDate: Date) => {
       try {
         setIsLoading(true);
         const headers = await getHeaders();
         const response = await axios.get(
           process.env.NEXT_PUBLIC_BACKEND_URL +
-            `/logs/range?startDate=${startDate}&endDate=${endDate}`,
+            `/logs/range?startDate=${
+              startDate.toISOString().split('T')[0]
+            }&endDate=${endDate.toISOString().split('T')[0]}`,
           {
             headers,
           },
         );
+        console.log(response.data);
         setLogs(response.data);
       } catch (error) {
         console.error(error);
-        toast.error('Error al obtener los logs');
+        toast.error('Error al obtener los registros');
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +44,7 @@ export const useLogs = () => {
   );
 
   useEffect(() => {
-    getLogs(startDate.toISOString(), endDate.toISOString());
+    getLogs(startDate, endDate);
   }, [getLogs, startDate, endDate]);
 
   return { logs, startDate, endDate, setStartDate, setEndDate };

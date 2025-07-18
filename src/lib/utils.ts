@@ -24,6 +24,11 @@ export const formatDate = (date: string, text: boolean = false) => {
       });
 };
 
+export const getAbsoluteDate = (dateStr: string) => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+};
+
 export const macrosKeys: Macros[] = ['calories', 'fats', 'carbs', 'protein'];
 export const macrosKeysSpanish: MacrosSpanish[] = [
   'Calorías',

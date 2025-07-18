@@ -6,7 +6,7 @@ import ProductsList from './ProductsList';
 const ProductsPage = () => {
   return (
     <PageWrapper>
-      <p className="title">Productos</p>
+      <p className="title max-md:hidden">Productos</p>
       <ProductsList />
     </PageWrapper>
   );

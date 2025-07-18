@@ -132,42 +132,47 @@ const RegisterForm = () => {
   });
 
   return (
-    <form className="space-y-10" onSubmit={onSubmit}>
-      <div className="space-y-4">
-        {REGISTER_FORM_FIELDS.map((field) => (
-          <div key={field.name} className="flex flex-col gap-2">
-            <label htmlFor={field.name} className="label">
-              {field.label}
-            </label>
-            <input
-              id={field.id}
-              type={field.type}
-              className={clsx(
-                'input',
-                errors[field.name as RegisterFormDataKeys]?.message && 'error',
+    <div className="grow flex flex-col justify-center gap-5">
+      <p className="title">Crear cuenta</p>
+
+      <form className="space-y-10" onSubmit={onSubmit}>
+        <div className="space-y-4">
+          {REGISTER_FORM_FIELDS.map((field) => (
+            <div key={field.name} className="flex flex-col gap-2">
+              <label htmlFor={field.name} className="label">
+                {field.label}
+              </label>
+              <input
+                id={field.id}
+                type={field.type}
+                className={clsx(
+                  'input',
+                  errors[field.name as RegisterFormDataKeys]?.message &&
+                    'error',
+                )}
+                placeholder={field.placeholder}
+                autoComplete={field.autocomplete ? 'on' : 'off'}
+                // autoFocus={field.name === 'firstName'}
+                {...register(field.name as RegisterFormDataKeys)}
+              />
+              {errors[field.name as RegisterFormDataKeys] && (
+                <small className="text-error">
+                  {errors[field.name as RegisterFormDataKeys]?.message}
+                </small>
               )}
-              placeholder={field.placeholder}
-              autoComplete={field.autocomplete ? 'on' : 'off'}
-              // autoFocus={field.name === 'firstName'}
-              {...register(field.name as RegisterFormDataKeys)}
-            />
-            {errors[field.name as RegisterFormDataKeys] && (
-              <small className="text-error">
-                {errors[field.name as RegisterFormDataKeys]?.message}
-              </small>
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="flex flex-col gap-5">
-        <button className="btn btn-primary" disabled={isLoading}>
-          Crear cuenta
-        </button>
-        <Link href={'/iniciar-sesion'} className="btn btn-plain">
-          Iniciar sesión
-        </Link>
-      </div>
-    </form>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-5">
+          <button className="btn btn-primary" disabled={isLoading}>
+            Crear cuenta
+          </button>
+          <Link href={'/iniciar-sesion'} className="btn btn-plain">
+            Iniciar sesión
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 };
 

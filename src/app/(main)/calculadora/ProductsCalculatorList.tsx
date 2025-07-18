@@ -192,7 +192,7 @@ const ProductsCalculatorList = () => {
                             Cantidad:
                           </p>
                           <p className="font-light md:text-lg! text-xs text-center">
-                            {`${product.quantity.toFixed()}g${
+                            {`${product.quantity?.toFixed()}g${
                               product.quantity !== product.presentationSize
                                 ? ` (de ${product.presentationSize.toFixed()}g)`
                                 : ''

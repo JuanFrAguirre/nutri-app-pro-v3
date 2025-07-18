@@ -45,12 +45,8 @@ body,
 }
 
 body {
-  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', 'Open Sans', Arial, Helvetica, sans-serif;
   @apply text-brand-black text-base bg-brand-white;
-}
-body > .modal-open {
-  overflow: hidden;
-  @apply fixed max-md:absolute;
 }
 
 .border-light {
@@ -66,7 +62,7 @@ body > .modal-open {
 }
 
 .title {
-  @apply text-3xl  md:text-4xl lg:text-5xl font-thin text-center text-black;
+  @apply text-2xl  md:text-4xl lg:text-5xl font-normal text-center text-brand-blacker;
 }
 
 .subtitle {
@@ -74,15 +70,15 @@ body > .modal-open {
 }
 
 .label {
-  @apply text-black font-medium;
+  @apply text-brand-gray font-medium text-sm;
 }
 
 .input {
-  @apply border border-stone-300 rounded-xs ring ring-brand-grayer p-2 px-4 w-full focus-visible:ring-2 focus-visible:shadow-xl focus-visible:ring-brand-pink outline-none bg-brand-whiter transition-all duration-500 focus-visible:bg-brand-whiter;
+  @apply border border-stone-300 rounded-xl ring ring-brand-grayer p-2 px-4 w-full focus-visible:ring-2 focus-visible:shadow-xl focus-visible:ring-brand-pink outline-none bg-brand-whiter transition-all duration-500 focus-visible:bg-brand-whiter;
 }
 
 .input-search {
-  @apply rounded-xs py-2 px-7 w-full focus-visible:ring-2 focus-visible:ring-brand-pink outline-none bg-brand-whiter;
+  @apply rounded py-1 px-10 w-full focus-visible:ring-2 focus-visible:ring-brand-pink outline-none bg-brand-whiter;
 }
 
 .input.error {
@@ -99,13 +95,13 @@ button {
   @apply rounded-xs outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl duration-300;
 }
 .btn {
-  @apply origin-bottom text-center max-md:text-lg text-xl border rounded-xs p-2 max-md:px-4 px-6 font-semibold transition-all cursor-pointer active:scale-[0.99] duration-500 disabled:cursor-not-allowed;
+  @apply origin-bottom text-center max-md:text-lg text-xl border rounded-xl p-2 max-md:px-4 px-6 font-semibold transition-all cursor-pointer active:scale-[0.99] duration-500 disabled:cursor-not-allowed;
 }
 .btn-primary {
-  @apply bg-brand-black border-brand-black text-brand-whiter hover:bg-brand-blacker hover:border-brand-blacker;
+  @apply bg-brand-black border-brand-black text-brand-whiter hover:bg-brand-blacker hover:border-brand-blacker focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl outline-none;
 }
 .btn-secondary {
-  @apply border-brand-gray bg-brand-gray text-brand-whiter hover:bg-brand-grayer;
+  @apply border-brand-gray bg-brand-gray text-brand-whiter hover:bg-brand-grayer focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl outline-none;
 }
 .btn-plain {
   @apply bg-brand-whiter text-brand-black border font-semibold hover:bg-white hover:text-brand-blacker shadow-md disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl;
@@ -125,7 +121,18 @@ button {
   display: -webkit-box;
   line-clamp: 2;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* number of lines to show */
-  line-height: 24px; /* fallback */
-  max-height: 48px; /* fallback */
+  -webkit-line-clamp: 2;
+  line-height: 24px;
+  height: 48px;
+}
+
+.custom-ellipsis-3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-height: 24px;
+  height: 72px;
 }

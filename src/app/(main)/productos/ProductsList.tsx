@@ -1,15 +1,16 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useProductStore } from '@/store/productStore';
-import Image from 'next/image';
-import clsx from 'clsx';
-import { IoMdCheckmark, IoMdSearch } from 'react-icons/io';
-import { MdClose } from 'react-icons/md';
-import { Product } from '@/types/types';
-import { toast } from 'react-toastify';
+import ProductItem from '@/components/ProductItem';
 import { useLoadingContext } from '@/contexts/LoadingContext';
-import axios from 'axios';
 import useAuth from '@/hooks/useAuth';
+import { useProductStore } from '@/store/productStore';
+import { ProductWithQuantity } from '@/types/types';
+import axios from 'axios';
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import ProductsNavBar from './ProductsNavBar';
+import EditProductModal from './EditProductModal';
+import { useModal } from '@/hooks/useModal';
 
 const ProductsList = () => {
   const {
@@ -20,11 +21,20 @@ const ProductsList = () => {
 
   const { isLoading, setIsLoading } = useLoadingContext();
   const [search, setSearch] = useState('');
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithQuantity[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<
+    ProductWithQuantity[]
+  >([]);
   const { getHeaders } = useAuth();
+  const {
+    isOpen: isEditProductModalOpen,
+    setIsOpen: setIsEditProductModalOpen,
+  } = useModal(false);
+  const [editProduct, setEditProduct] = useState<ProductWithQuantity>(
+    {} as ProductWithQuantity,
+  );
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product: ProductWithQuantity) => {
     if (productsInStore.find((p) => p._id === product._id)) {
       removeProductFromStore(product._id);
     } else {
@@ -36,13 +46,20 @@ const ProductsList = () => {
     }
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+  const handleSearch = (text: string) => {
+    setSearch(text);
     setFilteredProducts(
-      products.filter((p) =>
-        p.title.toLowerCase().includes(e.target.value.toLowerCase()),
+      products.filter(
+        (p) =>
+          p.title.toLowerCase().includes(text.toLowerCase()) ||
+          p.tags?.toLowerCase().includes(text.toLowerCase()),
       ),
     );
+  };
+
+  const handleEditProduct = (product: ProductWithQuantity) => {
+    setEditProduct(product);
+    setIsEditProductModalOpen(true);
   };
 
   useEffect(() => {
@@ -50,7 +67,7 @@ const ProductsList = () => {
       try {
         setIsLoading(true);
         const headers = await getHeaders();
-        const response: { data: Product[] } = await axios.get(
+        const response: { data: ProductWithQuantity[] } = await axios.get(
           process.env.NEXT_PUBLIC_BACKEND_URL + '/products',
           { headers },
         );
@@ -70,66 +87,36 @@ const ProductsList = () => {
 
   return (
     <div className="mb-20">
-      <div className=" z-[10] fixed bottom-10 md:left-1/2 md:-translate-x-1/2 md:max-w-[300px] bg-brand-whiter shadow-xl shadow-brand-black/20">
-        <div className="absolute left-1.5 top-0 bottom-0 flex items-center p-1">
-          <IoMdSearch className=" text-brand-grayer" />
-        </div>
-        <input
-          type="text"
-          className={clsx(
-            'input-search focus-visible:border-transparent px-7 border-[1px] border-brand-blacker md:py-4! md:px-10! md:text-lg!',
-          )}
-          value={search}
-          onChange={handleSearch}
-          placeholder="Ej: arroz..."
-        />
-        {!!search && (
-          <div
-            className="absolute right-1 top-0 bottom-0 flex items-center p-1"
-            onClick={() => setSearch('')}
-          >
-            <MdClose className=" text-brand-black " />
-          </div>
-        )}
-      </div>
+      {/* SEARCH BAR */}
+      <ProductsNavBar search={search} handleSearch={handleSearch} />
+
+      {/* PRODUCTS LIST */}
       <div
         className={clsx(
-          'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4',
+          'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4',
         )}
       >
-        {filteredProducts.map((product: Product) => {
+        {filteredProducts.map((product) => {
           const isInStore = productsInStore.find((p) => p._id === product._id);
           return (
-            <div
+            <ProductItem
               key={product._id}
-              className={clsx(
-                'border rounded-sm p-4 pt-7 bg-brand-whiter shadow-xl flex flex-col items-center gap-2 text-black relative',
-                isInStore ? 'border-brand-black' : 'border-brand-gray/5',
-              )}
-              onClick={() => handleProductClick(product)}
-            >
-              <div
-                className={clsx(
-                  'absolute -top-[1px] -right-[1px] flex items-center justify-center btn-secondary rounded-bl-lg p-0.5',
-                  !isInStore && 'hidden ',
-                )}
-              >
-                <IoMdCheckmark className="text-brand-whiter w-5 h-5" />
-              </div>
-              <p className="font-thin h-12 text-center text-sm md:text-base custom-ellipsis">
-                {product.title}
-              </p>
-              <Image
-                src={product.image || ''}
-                alt={product.title}
-                width={500}
-                height={500}
-                className="w-40 h-40 rounded-xs border border-brand-grayer/10 object-contain"
-              />
-            </div>
+              product={product}
+              isInStore={!!isInStore}
+              handleProductClick={handleProductClick}
+              handleEditProduct={handleEditProduct}
+            />
           );
         })}
       </div>
+
+      {/* EDIT PRODUCT MODAL */}
+      <EditProductModal
+        isOpen={isEditProductModalOpen}
+        setIsOpen={setIsEditProductModalOpen}
+        onClose={() => setIsEditProductModalOpen(false)}
+        product={editProduct}
+      />
     </div>
   );
 };

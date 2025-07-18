@@ -1,6 +1,6 @@
 'use client';
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 export type ModalProps = {
@@ -18,6 +18,17 @@ const Modal = ({
   className,
   onClose,
 }: ModalProps) => {
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
 
   return createPortal(
@@ -31,7 +42,7 @@ const Modal = ({
       />
       <div
         className={clsx(
-          'bg-brand-white p-6 rounded-xs shadow-xl z-10 max-w-2xl w-full mx-4',
+          'bg-brand-white p-6 rounded-xs shadow-xl z-10 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto',
           className,
         )}
       >
