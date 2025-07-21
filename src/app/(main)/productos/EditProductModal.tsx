@@ -7,6 +7,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
+import { useAxios } from '@/lib/axios';
 
 const EditProductModal = ({
   isOpen,
@@ -19,7 +21,6 @@ const EditProductModal = ({
   onClose: () => void;
   product: ProductWithQuantity;
 }) => {
-  // validation schema
   const schema = yup.object().shape({
     title: yup.string().required('El título es requerido'),
     image: yup
@@ -53,11 +54,12 @@ const EditProductModal = ({
       .min(0, 'El tamaño de presentación debe ser >= 0'),
     tags: yup.string().optional(),
   });
+  const api = useAxios();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting, isLoading, isDirty },
     reset,
   } = useForm({
     resolver: yupResolver(schema),
@@ -87,9 +89,12 @@ const EditProductModal = ({
     });
   }, [product, reset]);
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     try {
       console.log('Edited product:', data);
+      await api.put(`/products/${product._id}`, data);
+      toast.success('Producto editado correctamente');
+      window.location.reload();
     } catch (error) {
       console.error(error);
       toast.error('Error al editar el producto');
@@ -99,8 +104,22 @@ const EditProductModal = ({
   });
 
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      onClose={() => {
+        onClose();
+        reset();
+      }}
+    >
       <p className="title">Editar producto</p>
+      <Image
+        src={product.image || ''}
+        alt={product.title}
+        width={500}
+        height={500}
+        className="w-auto h-auto rounded-xl border-light mx-auto my-4"
+      />
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="flex flex-col gap-2">
           <label htmlFor="title" className="label">
@@ -138,6 +157,7 @@ const EditProductModal = ({
             <input
               id="calories"
               type="number"
+              step={0.1}
               className={clsx('input', errors.calories && 'error')}
               {...register('calories', { valueAsNumber: true })}
             />
@@ -152,6 +172,7 @@ const EditProductModal = ({
             <input
               id="fats"
               type="number"
+              step={0.1}
               className={clsx('input', errors.fats && 'error')}
               {...register('fats', { valueAsNumber: true })}
             />
@@ -166,6 +187,7 @@ const EditProductModal = ({
             <input
               id="carbs"
               type="number"
+              step={0.1}
               className={clsx('input', errors.carbs && 'error')}
               {...register('carbs', { valueAsNumber: true })}
             />
@@ -180,6 +202,7 @@ const EditProductModal = ({
             <input
               id="protein"
               type="number"
+              step={0.1}
               className={clsx('input', errors.protein && 'error')}
               {...register('protein', { valueAsNumber: true })}
             />
@@ -195,6 +218,7 @@ const EditProductModal = ({
           <input
             id="presentationSize"
             type="number"
+            step={0.1}
             className={clsx('input', errors.presentationSize && 'error')}
             {...register('presentationSize', { valueAsNumber: true })}
           />
@@ -208,9 +232,8 @@ const EditProductModal = ({
           <label htmlFor="tags" className="label">
             Etiquetas (separadas por comas)
           </label>
-          <input
+          <textarea
             id="tags"
-            type="text"
             className={clsx('input', errors.tags && 'error')}
             {...register('tags')}
           />
@@ -222,14 +245,26 @@ const EditProductModal = ({
           <button
             type="button"
             className="btn btn-plain grow"
-            onClick={onClose}
+            onClick={() => {
+              reset({
+                title: product.title,
+                image: product.image || '',
+                calories: product.calories,
+                fats: product.fats,
+                carbs: product.carbs,
+                protein: product.protein,
+                presentationSize: product.presentationSize,
+                tags: product.tags || '',
+              });
+              onClose();
+            }}
           >
             Cancelar
           </button>
           <button
             type="submit"
             className="btn btn-primary grow"
-            disabled={!isValid}
+            disabled={!isValid || isLoading || !isDirty || isSubmitting}
           >
             Confirmar
           </button>

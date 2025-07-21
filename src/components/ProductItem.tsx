@@ -11,20 +11,20 @@ const ProductItem = ({
   handleEditProduct,
 }: {
   product: ProductWithQuantity;
-  isInStore: boolean;
-  handleProductClick: (product: ProductWithQuantity) => void;
-  handleEditProduct: (product: ProductWithQuantity) => void;
+  isInStore?: boolean;
+  handleProductClick?: (product: ProductWithQuantity) => void;
+  handleEditProduct?: (product: ProductWithQuantity) => void;
 }) => {
   return (
     <div
       key={product._id}
       className={clsx(
-        'border-2! rounded-sm p-4 bg-brand-whiter shadow-xl flex flex-col items-center gap-2 text-black relative',
+        'border-2! rounded-xl p-3 pt-5 bg-brand-whiter shadow-xl flex flex-col items-center gap-2 text-black relative',
         isInStore ? 'border-brand-pink' : 'border-light',
       )}
-      onClick={() => handleProductClick(product)}
+      onClick={() => handleProductClick?.(product)}
     >
-      <p className="font-medium text-brand-grayer text-center text-base custom-ellipsis-3 pr-3">
+      <p className="text-brand-grayer text-center custom-ellipsis-3 text-[14px]">
         {product.title}
       </p>
 
@@ -37,23 +37,22 @@ const ProductItem = ({
         )}
         onClick={(e) => {
           e.stopPropagation();
-          handleEditProduct(product);
+          handleEditProduct?.(product);
         }}
       >
-        <HiPencil className="text-brand-whiter" size={28} />
+        <HiPencil className="text-brand-whiter" size={20} />
       </button>
       <Image
         src={product.image || ''}
         alt={product.title}
         width={500}
         height={500}
-        sizes="100vw"
-        className="rounded-xs border border-brand-grayer/10 object-contain"
+        className="rounded-xl border border-brand-grayer/10 object-contain w-auto h-auto"
       />
       {/* IS IN STORE MARKER */}
       <div
         className={clsx(
-          'absolute -bottom-[2px] -right-[2px] flex items-center justify-center bg-brand-pink rounded-tl-lg rounded-br-sm p-0.5',
+          'absolute -bottom-[2px] -right-[2px] flex items-center justify-center bg-brand-pink rounded-tl-xl rounded-br-xl p-0.5',
           !isInStore && 'hidden ',
         )}
       >

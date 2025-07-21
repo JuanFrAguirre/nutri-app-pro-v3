@@ -21,6 +21,13 @@ export type MacrosSpanish =
   | 'Carbohidratos'
   | 'Proteínas';
 
+export type MacrosTable = {
+  calories: number;
+  fats: number;
+  carbs: number;
+  protein: number;
+};
+
 export type ProductWithQuantity = Product & {
   quantity: number;
   quantityType: 'absolute' | 'relative';

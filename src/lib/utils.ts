@@ -29,6 +29,8 @@ export const getAbsoluteDate = (dateStr: string) => {
   return new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 };
 
+export const trimDate = (date: Date) => date.toISOString().split('T')[0];
+
 export const macrosKeys: Macros[] = ['calories', 'fats', 'carbs', 'protein'];
 export const macrosKeysSpanish: MacrosSpanish[] = [
   'Calorías',
@@ -58,15 +60,11 @@ export const macrosIndexed: Record<
   },
 };
 
-export const customFixedRound = (value: number, rounded: boolean = false) => {
+export const customFixedRound = (value: number, rounded: boolean = true) => {
   if (value % 1 === 0) {
     return String(value);
   }
-  return rounded
-    ? String(Math.round(value))
-    : Number(value.toFixed(1)) % 1 === 0
-    ? value.toFixed(1)
-    : String(Math.round(value));
+  return rounded ? String(Math.round(value)) : value.toFixed(1);
 };
 
 // Sum up a bunch of items by projecting each one to a number.
@@ -102,21 +100,18 @@ export const getTotalMacros = (
     macrosKeys.forEach((k) => {
       totalMacros[k] = sumBy(
         logs,
-        (l) => (l.product[k] as number) * l.quantity * 0.01,
+        (l) => (l.product[k] as number) * l.quantity * 0.01 * l.quantity,
       );
     });
   } else if (inputType === 'meal') {
     const meals = input as MealWithQuantity[];
     macrosKeys.forEach((k) => {
-      totalMacros[k] = sumBy(
-        meals,
-        (m) =>
-          m.quantity *
-          m.mealProducts.reduce(
-            (acc, curr) =>
-              acc + (curr.product[k] as number) * curr.quantity * 0.01,
-            0,
-          ),
+      totalMacros[k] = sumBy(meals, (m) =>
+        m.mealProducts?.reduce(
+          (acc, curr) =>
+            acc + (curr.product[k] as number) * curr.quantity * 0.01,
+          0,
+        ),
       );
     });
   } else if (inputType === 'logMeal') {
@@ -126,7 +121,7 @@ export const getTotalMacros = (
         logs,
         (l) =>
           l.quantity *
-          l.meal.mealProducts.reduce(
+          l.meal?.mealProducts?.reduce(
             (acc, curr) =>
               acc + (curr.product[k] as number) * curr.quantity * 0.01,
             0,

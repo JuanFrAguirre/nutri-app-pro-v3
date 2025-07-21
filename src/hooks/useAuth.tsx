@@ -16,6 +16,7 @@ const useAuth = () => {
     }, {} as Record<string, string>);
     const token = cookies.Authorization;
     const user = cookies.User;
+
     if (token) {
       setIsLoggedIn(true);
     } else {

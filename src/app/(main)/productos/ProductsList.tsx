@@ -83,14 +83,14 @@ const ProductsList = () => {
   if (isLoading) return '';
 
   return (
-    <div className="mb-20">
+    <div className="">
       {/* SEARCH BAR */}
       <ProductsNavBar search={search} handleSearch={handleSearch} />
 
       {/* PRODUCTS LIST */}
       <div
         className={clsx(
-          'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4',
+          'grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-2',
         )}
       >
         {filteredProducts.map((product) => {

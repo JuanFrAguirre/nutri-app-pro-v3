@@ -175,7 +175,7 @@ const ProductsCalculatorList = () => {
                           alt={product.title}
                           width={100}
                           height={100}
-                          className="w-20 h-20 md:w-32 md:h-32 rounded-xs border border-brand-grayer/10"
+                          className="w-20 h-20 md:w-32 md:h-32 rounded-xl border border-brand-grayer/10"
                         />
                       </div>
 
@@ -197,7 +197,7 @@ const ProductsCalculatorList = () => {
                         <div className="flex max-md:flex-col gap-2">
                           <button
                             className={clsx(
-                              'grow border rounded-xs p-1 transition-colors cursor-pointer',
+                              'grow border rounded-xl p-1 transition-colors cursor-pointer',
                               product.quantityType === 'relative'
                                 ? 'bg-brand-black text-white border-brand-black'
                                 : 'border-brand-grayer',
@@ -215,7 +215,7 @@ const ProductsCalculatorList = () => {
                           </button>
                           <button
                             className={clsx(
-                              'grow border rounded-xs p-1 transition-colors cursor-pointer',
+                              'grow border rounded-xl p-1 transition-colors cursor-pointer',
                               product.quantityType === 'absolute'
                                 ? 'bg-brand-black text-white border-brand-black'
                                 : 'border-brand-grayer',

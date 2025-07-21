@@ -92,10 +92,13 @@ button {
 }
 
 .link {
-  @apply rounded-xs outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl duration-300;
+  @apply rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl duration-300;
+}
+.mobile-link {
+  @apply focus-visible:ring-2 focus-visible:ring-brand-pink outline-none;
 }
 .btn {
-  @apply origin-bottom text-center max-md:text-lg text-xl border rounded-xl p-2 max-md:px-4 px-6 font-semibold transition-all cursor-pointer active:scale-[0.99] duration-500 disabled:cursor-not-allowed;
+  @apply origin-bottom flex justify-center items-center gap-2 text-center max-md:text-lg text-xl border rounded-xl p-2 max-md:px-4 px-6 font-semibold transition-all cursor-pointer active:scale-[0.97] duration-150 ease-linear disabled:cursor-not-allowed;
 }
 .btn-primary {
   @apply bg-brand-black border-brand-black text-brand-whiter hover:bg-brand-blacker hover:border-brand-blacker focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:shadow-xl outline-none;
@@ -124,6 +127,11 @@ button {
   -webkit-line-clamp: 2;
   line-height: 24px;
   height: 48px;
+
+  @media (max-width: 768px) {
+    line-height: 14px;
+    height: 28px;
+  }
 }
 
 .custom-ellipsis-3 {
@@ -135,4 +143,9 @@ button {
   -webkit-line-clamp: 3;
   line-height: 24px;
   height: 72px;
+
+  @media (max-width: 768px) {
+    line-height: 14px;
+    height: 45px;
+  }
 }

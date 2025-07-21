@@ -2,6 +2,7 @@
 import clsx from 'clsx';
 import React, { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { MdClose } from 'react-icons/md';
 
 export type ModalProps = {
   isOpen: boolean;
@@ -42,10 +43,19 @@ const Modal = ({
       />
       <div
         className={clsx(
-          'bg-brand-white p-6 rounded-xs shadow-xl z-10 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto',
+          'bg-brand-white p-6 pt-10 rounded-2xl shadow-xl z-10 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto relative',
           className,
         )}
       >
+        <button
+          className="absolute right-4 top-4"
+          onClick={() => {
+            setIsOpen(false);
+            onClose?.();
+          }}
+        >
+          <MdClose className="text-brand-black" size={30} />
+        </button>
         {children}
       </div>
     </div>,

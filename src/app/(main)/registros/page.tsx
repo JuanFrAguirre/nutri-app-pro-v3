@@ -1,12 +1,12 @@
 import PageWrapper from '@/components/PageWrapper';
-import LogList from './LogList';
+import LogsList from './LogsList';
 
 export const dynamic = 'force-dynamic';
 
 const LogsPage = async () => {
   return (
     <PageWrapper>
-      <LogList />
+      <LogsList />
     </PageWrapper>
   );
 };

@@ -63,36 +63,35 @@ export const MobileNav = ({ links, pathname, products }: NavProps) => {
                     key={link.label}
                     href={link.href}
                     className={clsx(
-                      'text-brand-black flex items-center gap-2 p-3 grow justify-center border-t-[1px] border-t-brand-grayer/20',
+                      'text-brand-black flex flex-col items-center gap-px px-3 py-1.5 grow justify-center border-t-[1px] border-t-brand-grayer/20 w-1/5! mobile-link',
                       pathname.includes(link.href.split('?')[0])
                         ? 'bg-brand-black text-brand-white border-t-brand-black'
                         : 'border-t-brand-grayer',
                     )}
                   >
                     {link.icon}
+                    <p className="text-xs! font-semibold!">{link.label}</p>
                   </Link>
                 ))}
             </div>
 
             {/* CALCULATOR/STORE BUTTON */}
-            {!!products.length &&
-              !pathname.includes('/calculadora') &&
-              !pathname.includes('/registros') && (
-                <Link
-                  href={'/calculadora'}
-                  className="fixed bottom-16 right-6 bg-brand-whiter border border-brand-black/20 p-1 rounded-sm shadow-xl shadow-brand-black/20"
-                >
-                  <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
-                    <p className="text-brand-whiter text-sm font-semibold">
-                      {products.length}
-                    </p>
-                  </div>
-                  <IoMdCalculator
-                    size={40}
-                    className={clsx('transition-all duration-500')}
-                  />
-                </Link>
-              )}
+            {!!products.length && pathname.includes('/productos') && (
+              <Link
+                href={'/calculadora'}
+                className="fixed bottom-16 right-6 bg-brand-whiter border border-brand-black/20 p-1 rounded-xl shadow-xl shadow-brand-black/20"
+              >
+                <div className="bg-brand-pink w-[22px] h-[22px] absolute -top-3 -right-[10px] rounded-full grid place-items-center">
+                  <p className="text-brand-whiter text-sm font-semibold">
+                    {products.length}
+                  </p>
+                </div>
+                <IoMdCalculator
+                  size={40}
+                  className={clsx('transition-all duration-500')}
+                />
+              </Link>
+            )}
           </>
         )}
       </div>

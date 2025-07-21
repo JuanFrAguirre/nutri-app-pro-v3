@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
         password,
       },
     );
-    const { token, sub } = signInResponse.data;
+    const { token, sub, user } = signInResponse.data;
 
     const cookieStore = await cookies();
     cookieStore.set('Authorization', `Bearer ${token}`, {
@@ -21,12 +21,22 @@ export async function POST(request: NextRequest) {
       maxAge: 1 * 60 * 60,
       path: '/',
     });
-    cookieStore.set('User', JSON.stringify({ id: sub, email }), {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1 * 60 * 60,
-      path: '/',
-    });
+    cookieStore.set(
+      'User',
+      JSON.stringify({
+        id: sub,
+        email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      }),
+      {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1 * 60 * 60,
+        path: '/',
+      },
+    );
     return Response.json({ message: 'Login exitoso', token });
   } catch (error) {
     console.error(error);
