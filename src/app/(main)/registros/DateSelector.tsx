@@ -11,7 +11,7 @@ const DateSelector = ({
   handleChangeDate: (direction: number) => void;
 }) => {
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex items-center justify-between gap-6 grow">
       <button
         className="btn-primary btn shadow-xl!"
         onClick={() => {

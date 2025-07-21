@@ -54,7 +54,12 @@ export const MobileNav = ({ links, pathname, products }: NavProps) => {
         {!!links.length && (
           <>
             {/* BOTTOM NAV */}
-            <div className="fixed bottom-0 inset-x-0 bg-brand-whiter flex justify-between shadow-[0_-20px_25px_-5px_rgb(0,0,0,0.1),0_-8px_10px_-6px_rgb(0,0,0,0.1)]">
+            <div
+              className={clsx(
+                'fixed bottom-0 inset-x-0 bg-brand-whiter flex justify-between',
+                pathname.includes('/registros') ? '' : 'shadow-upwards',
+              )}
+            >
               {/* MENU BUTTON */}
               {links
                 .sort((a, b) => a.mobileIndex - b.mobileIndex)

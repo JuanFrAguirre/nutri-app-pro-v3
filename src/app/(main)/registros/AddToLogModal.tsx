@@ -1,6 +1,5 @@
 import Modal from '@/components/Modal';
 import clsx from 'clsx';
-import Link from 'next/link';
 import { useState } from 'react';
 
 const AddToLogModal = ({
@@ -13,9 +12,9 @@ const AddToLogModal = ({
   handleCloseModal: () => void;
 }) => {
   const [selectedTab, setSelectedTab] = useState<'meals' | 'products'>('meals');
-  const resetModal = () => {
-    setSelectedTab('meals');
-  };
+  // const resetModal = () => {
+  //   setSelectedTab('meals');
+  // };
 
   return (
     <Modal
@@ -44,7 +43,7 @@ const AddToLogModal = ({
             <p>Productos</p>
           </button>
         </div>
-        {selectedTab === 'meals' ? (
+        {/* {selectedTab === 'meals' ? (
           <div>
             {!!selectedMeals?.length ? (
               <p>SELECTED MEALS</p>
@@ -71,7 +70,7 @@ const AddToLogModal = ({
               </div>
             )}
           </div>
-        )}
+        )} */}
       </div>
     </Modal>
   );

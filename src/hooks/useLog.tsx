@@ -1,7 +1,6 @@
 'use client';
 import { useLoadingContext } from '@/contexts/LoadingContext';
 import { useAxios } from '@/lib/axios';
-import { trimDate } from '@/lib/utils';
 import { Log, MealWithQuantity, ProductWithQuantity } from '@/types/types';
 import { AxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,7 +10,7 @@ const useLog = () => {
   const api = useAxios();
   const { setIsLoading } = useLoadingContext();
   // const [date, setDate] = useState<string>(trimDate(new Date()));
-  const [log, setLog] = useState<Log | null>(null);
+  const [_log, setLog] = useState<Log | null>(null);
   const [products, setProducts] = useState<ProductWithQuantity[]>([]);
   const [meals, setMeals] = useState<MealWithQuantity[]>([]);
 

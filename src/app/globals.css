@@ -49,6 +49,10 @@ body {
   @apply text-brand-black text-base bg-brand-white;
 }
 
+.shadow-upwards {
+  @apply shadow-[0_-20px_25px_-5px_rgb(0,0,0,0.1),0_-8px_10px_-6px_rgb(0,0,0,0.1)];
+}
+
 .border-light {
   @apply border-brand-grayer/30 border;
 }

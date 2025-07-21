@@ -10,7 +10,7 @@ const LoadingSpinner = () => {
   return (
     <div
       className={clsx(
-        'fixed inset-0 bg-brand-black/50 z-[100] grid place-items-center backdrop-blur-[1.5px] transition-all',
+        'fixed inset-0 bg-brand-white/50 z-[100] grid place-items-center backdrop-blur-[1.5px] transition-all',
         !isLoading && 'hidden',
       )}
     >
